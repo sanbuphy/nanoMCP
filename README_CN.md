@@ -109,6 +109,12 @@ python agent_official_mcp.py "给出 tavily/context7 的安装配置与一次调
 - `nanomcp/registry.py`：多 MCP 注册与路由
 - `nanomcp/builtin.py`：内置 fake servers 与 handlers
 - `officialmcp/registry.py`：官方 SDK 注册封装
+- `stdio/mcp_stdio_server.py`：stdio 传输 MCP server 示例
+- `stdio/mcp_stdio_client.py`：stdio 传输 MCP client + agent 循环示例
+- `sse/mcp_sse_server.py`：SSE 传输 MCP server 示例
+- `sse/mcp_sse_client.py`：SSE 传输 MCP client + agent 循环示例
+- `streamable_http/mcp_streamable_http_server.py`：streamable_http 传输 MCP server 示例
+- `streamable_http/mcp_streamable_http_client.py`：streamable_http 传输 MCP client + agent 循环示例
 - `agent.py`：调用自研 nanomcp fake 注册
 - `agent-official.py`：调用 officialmcp fake 注册
 - `agent_official_mcp.py`：官方 MCP real 接入模板（tavily/context7）

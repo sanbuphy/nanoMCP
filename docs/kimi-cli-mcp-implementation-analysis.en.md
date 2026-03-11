@@ -1,58 +1,59 @@
-# Kimi CLI 的 MCP (Model Context Protocol) 实现机制深度拆解
+# In-depth dismantling of Kimi CLI’s MCP (Model Context Protocol) implementation mechanism
 
-> English version: [kimi-cli-mcp-implementation-analysis.en.md](./kimi-cli-mcp-implementation-analysis.en.md)
+> English translation generated from `./kimi-cli-mcp-implementation-analysis.md`
+
+
+> **Project address**: [https://github.com/MoonshotAI/kimi-cli](https://github.com/MoonshotAI/kimi-cli)
 >
-> **项目地址**: [https://github.com/MoonshotAI/kimi-cli](https://github.com/MoonshotAI/kimi-cli)
+> **Analysis version**: v1.3
 >
-> **分析版本**: v1.3
->
-> **分析时间**: 2026-03-11
+> **Analysis time**: 2026-03-11
 
-**相关文档**：
-- [官方 MCP 介绍](./official-mcp-introduction.md) - MCP 协议的基础概念和原理
-- [Gemini CLI MCP 实现](./gemini-cli-mcp-implementation-analysis.md) - 基于 TypeScript SDK 的实现对比
+**Related Documents**:
+- [Official MCP Introduction](./official-mcp-introduction.en.md) - Basic concepts and principles of MCP protocol
+- [Gemini CLI MCP Implementation](./gemini-cli-mcp-implementation-analysis.en.md) - Implementation comparison based on TypeScript SDK
 
-## 目录
+## Table of contents
 
-- [1. 项目概述](#1-项目概述)
-- [2. MCP 架构总览](#2-mcp-架构总览)
-- [3. 核心组件拆解](#3-核心组件拆解)
-- [4. 完整工作流程](#4-完整工作流程)
-- [5. 关键技术实现](#5-关键技术实现)
-- [6. 安全机制](#6-安全机制)
-- [7. 使用示例](#7-使用示例)
-- [8. 总结与思考](#8-总结与思考)
+- 1. Project Overview
+- 2. MCP Architecture Overview
+- 3. Core Component Breakdown
+- 4. End-to-End Workflow
+- 5. Key Technical Implementations
+- 6. Security Mechanisms
+- 7. Usage Examples
+- 8. Summary and Takeaways
 
 ---
 
-## 1. 项目概述
+## 1. Project Overview
 
-### 1.1 什么是 Kimi CLI？
+### 1.1 What is Kimi CLI?
 
-Kimi Code CLI 是由月之暗面（Moonshot AI）开发的终端 AI 助手，它不仅能帮助你完成软件开发任务，还能作为一个强大的 shell 环境。Kimi CLI 支持读取和编辑代码、执行 shell 命令、搜索网页等功能。
+Kimi Code CLI is a terminal AI assistant developed by Moonshot AI. It not only helps you complete software development tasks, but also serves as a powerful shell environment. Kimi CLI supports functions such as reading and editing code, executing shell commands, searching web pages, and more.
 
-### 1.2 什么是 MCP？
+### 1.2 What is MCP?
 
-**MCP (Model Context Protocol)** 是一个开放协议，让 AI 模型可以安全地与外部工具和数据源交互。通过 MCP，Kimi CLI 可以：
+**MCP (Model Context Protocol)** is an open protocol that allows AI models to safely interact with external tools and data sources. Through MCP, Kimi CLI can:
 
-- 访问特定 API 或数据库
-- 控制浏览器或其他应用
-- 与第三方服务集成（GitHub、Linear、Notion 等）
-- 扩展 AI 的能力边界
+- Access a specific API or database
+- Control browsers or other applications
+- Integrate with third-party services (GitHub, Linear, Notion, etc.)
+- Expand the boundaries of AI capabilities
 
-### 1.3 技术栈
+### 1.3 Technology stack
 
-- **语言**: Python 3.12+
-- **MCP 客户端**: `fastmcp==2.12.5`
-- **配置管理**: Pydantic
-- **异步框架**: asyncio
-- **CLI 框架**: Typer
+- **Language**: Python 3.12+
+- **MCP client**: `fastmcp==2.12.5`
+- **Configuration Management**: Pydantic
+- **Asynchronous Framework**: asyncio
+- **CLI Framework**: Typer
 
 ---
 
-## 2. MCP 架构总览
+## 2. MCP architecture overview
 
-### 2.1 系统架构图
+### 2.1 System Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -97,8 +98,7 @@ Kimi Code CLI 是由月之暗面（Moonshot AI）开发的终端 AI 助手，它
 │  └──────────┘  └──────────┘  └──────────┘  └──────────┘       │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
-### 2.2 核心代码结构
+### 2.2 Core code structure
 
 ```
 src/kimi_cli/
@@ -119,13 +119,13 @@ src/kimi_cli/
 
 ---
 
-## 3. 核心组件拆解
+## 3. Disassembly of core components
 
-### 3.1 配置管理 (`cli/mcp.py`)
+### 3.1 Configuration management (`cli/mcp.py`)
 
-#### 配置文件结构
+#### Configuration file structure
 
-MCP 配置存储在 `~/.kimi/mcp.json`，支持两种传输模式：
+MCP configuration is stored in `~/.kimi/mcp.json` and supports two transmission modes:
 
 ```json
 {
@@ -149,8 +149,7 @@ MCP 配置存储在 `~/.kimi/mcp.json`，支持两种传输模式：
   }
 }
 ```
-
-#### 配置加载流程
+#### Configuration loading process
 
 ```python
 # cli/mcp.py: _load_mcp_config()
@@ -173,8 +172,7 @@ def _load_mcp_config() -> dict[str, Any]:
 
     return config
 ```
-
-#### CLI 命令实现
+#### CLI command implementation
 
 ```bash
 # 添加 HTTP 服务器
@@ -199,8 +197,7 @@ kimi mcp auth linear
 # 移除服务器
 kimi mcp remove context7
 ```
-
-**代码实现** (`cli/mcp.py:83-193`):
+**Code implementation** (`cli/mcp.py:83-193`):
 
 ```python
 @cli.command("add")
@@ -239,11 +236,11 @@ def mcp_add(
 
 ---
 
-### 3.2 工具集管理 (`soul/toolset.py`)
+### 3.2 Toolset management (`soul/toolset.py`)
 
-#### KimiToolset 类
+#### KimiToolset Class
 
-**职责**: 管理所有工具（内置工具 + MCP 工具）
+**Responsibilities**: Manage all tools (built-in tools + MCP tools)
 
 ```python
 class KimiToolset:
@@ -273,8 +270,7 @@ class KimiToolset:
 
         return asyncio.create_task(_call())
 ```
-
-#### MCP 服务器信息
+#### MCP server information
 
 ```python
 @dataclass
@@ -284,8 +280,7 @@ class MCPServerInfo:
     client: fastmcp.Client[Any]  # fastmcp 客户端
     tools: list[MCPTool[Any]]    # 该服务器提供的工具列表
 ```
-
-**状态机**:
+**State Machine**:
 
 ```
 pending (初始状态)
@@ -299,11 +294,11 @@ connecting (开始连接)
 
 ---
 
-### 3.3 MCP 工具封装 (`soul/toolset.py`)
+### 3.3 MCP tool package (`soul/toolset.py`)
 
-#### MCPTool 类
+#### MCPTool class
 
-**职责**: 将 MCP 工具封装为 Kimi CLI 可调用的工具
+**Responsibility**: Encapsulate MCP tools into tools callable by Kimi CLI
 
 ```python
 class MCPTool[T: ClientTransport](CallableTool):
@@ -334,8 +329,7 @@ class MCPTool[T: ClientTransport](CallableTool):
         )
         self._action_name = f"mcp:{mcp_tool.name}"
 ```
-
-#### 工具调用流程
+#### Tool calling process
 
 ```python
 async def __call__(self, **kwargs) -> ToolReturnValue:
@@ -368,7 +362,7 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 
 ---
 
-### 3.4 配置定义 (`config.py`)
+### 3.4 Configuration definition (`config.py`)
 
 ```python
 class MCPClientConfig(BaseModel):
@@ -391,9 +385,9 @@ class Config(BaseModel):
 
 ---
 
-## 4. 完整工作流程
+## 4. Complete workflow
 
-### 4.1 启动流程图
+### 4.1 Startup flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -457,8 +451,7 @@ class Config(BaseModel):
 │                   7. 等待用户输入                                │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
-### 4.2 工具调用流程图
+### 4.2 Tool calling flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -554,8 +547,7 @@ class Config(BaseModel):
 │              AI 处理结果并返回给用户                              │
 └─────────────────────────────────────────────────────────────────┘
 ```
-
-### 4.3 OAuth 授权流程图
+### 4.3 OAuth authorization flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -603,13 +595,13 @@ class Config(BaseModel):
 
 ---
 
-## 5. 关键技术实现
+## 5. Key technology implementation
 
-### 5.1 异步并发加载
+### 5.1 Asynchronous concurrent loading
 
-**问题**: 如何高效加载多个 MCP 服务器？
+**Question**: How to efficiently load multiple MCP servers?
 
-**解决方案**: 使用 `asyncio.gather` 并发连接所有服务器
+**Solution**: Use `asyncio.gather` to connect to all servers concurrently
 
 ```python
 # soul/toolset.py: load_mcp_tools()
@@ -631,19 +623,18 @@ async def load_mcp_tools(self, mcp_configs, runtime, in_background=True):
     if failed_servers:
         raise MCPRuntimeError(f"Failed to connect MCP servers: {failed_servers}")
 ```
-
-**优势**:
-- 多个服务器同时连接，不阻塞启动
-- 单个服务器失败不影响其他服务器
-- 快速反馈连接状态
+**Advantages**:
+- Multiple servers are connected at the same time without blocking startup
+- Failure of a single server does not affect other servers
+- Quick feedback on connection status
 
 ---
 
-### 5.2 后台加载策略
+### 5.2 Background loading strategy
 
-**问题**: MCP 服务器连接可能较慢，如何不阻塞用户启动？
+**Question**: The MCP server connection may be slow, how to avoid blocking user startup?
 
-**解决方案**: 支持后台加载
+**Solution**: Support background loading
 
 ```python
 # soul/toolset.py: load_mcp_tools()
@@ -666,19 +657,18 @@ async def wait_for_mcp_tools(self) -> None:
     if task:
         await task
 ```
-
-**用户体验**:
-- 启动速度快
-- 显示加载进度通知
-- 后台静默完成
+**User Experience**:
+- Fast startup
+- Show loading progress notification
+- Completed silently in the background
 
 ---
 
-### 5.3 内容类型转换
+### 5.3 Content type conversion
 
-**问题**: MCP 返回的内容类型与 Kimi CLI 内部格式不一致
+**Issue**: The content type returned by MCP is inconsistent with the Kimi CLI internal format
 
-**解决方案**: 统一转换函数
+**Solution**: Unify conversion functions
 
 ```python
 # soul/toolset.py: convert_mcp_tool_result()
@@ -718,11 +708,11 @@ def convert_mcp_content(content) -> ContentPart:
 
 ---
 
-### 5.4 超时控制
+### 5.4 Timeout control
 
-**问题**: MCP 服务器可能响应缓慢或无响应
+**Issue**: MCP server may be slow or unresponsive
 
-**解决方案**: 配置超时 + 异常捕获
+**Solution**: Configure timeout + exception catching
 
 ```python
 # soul/toolset.py: MCPTool.__call__()
@@ -755,8 +745,7 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
             )
         raise
 ```
-
-**配置** (`~/.kimi/config.yaml`):
+**Configuration** (`~/.kimi/config.yaml`):
 
 ```yaml
 mcp:
@@ -766,11 +755,11 @@ mcp:
 
 ---
 
-### 5.5 错误隔离
+### 5.5 Error isolation
 
-**问题**: 一个 MCP 服务器失败不应影响其他服务器
+**Issue**: Failure of one MCP server should not affect other servers
 
-**解决方案**: 独立的连接任务 + 状态管理
+**Solution**: Independent connection task + state management
 
 ```python
 # soul/toolset.py: _connect_server()
@@ -809,11 +798,11 @@ async def _connect_server(
 
 ---
 
-## 6. 安全机制
+## 6. Security mechanism
 
-### 6.1 用户审批机制
+### 6.1 User approval mechanism
 
-**所有 MCP 工具调用都需要用户确认**
+**All MCP tool calls require user confirmation**
 
 ```python
 # soul/toolset.py: MCPTool.__call__()
@@ -832,8 +821,7 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
     # 用户批准后才执行
     ...
 ```
-
-**审批界面**:
+**Approval Interface**:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -854,10 +842,9 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 │ [允许] [拒绝] [总是允许]                │
 └─────────────────────────────────────────┘
 ```
+### 6.2 YOLO mode
 
-### 6.2 YOLO 模式
-
-**注意**: 即使在 YOLO 模式下，MCP 工具也需要审批
+**Note**: Even in YOLO mode, MCP tools require approval
 
 ```python
 # YOLO 模式只影响内置工具，不影响 MCP 工具
@@ -865,8 +852,7 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 # "In YOLO mode, MCP tool operations will also be auto-approved.
 #  It is recommended to use YOLO mode only when you fully trust the MCP server."
 ```
-
-### 6.3 OAuth Token 安全存储
+### 6.3 OAuth Token secure storage
 
 ```python
 # fastmcp 使用 keyring 安全存储 OAuth token
@@ -875,31 +861,29 @@ from fastmcp.client.auth.oauth import FileTokenStorage
 storage = FileTokenStorage(server_url=server_url)
 tokens = await storage.get_tokens()  # 从安全存储读取
 ```
+### 6.4 Prompt word injection protection
 
-### 6.4 提示词注入防护
-
-MCP 工具返回的内容会被标记，帮助 AI 区分工具输出和用户指令：
+Content returned by MCP tools is tagged to help the AI ​​differentiate between tool output and user instructions:
 
 ```python
 # 工具返回内容会被标记为 "tool output"
 # AI 可以识别这不是用户指令
 ```
+**Documentation Warning**:
 
-**文档警告**:
+> Content returned by MCP tools may contain malicious instructions that attempt to induce the AI ​​to perform dangerous operations.
+> Kimi Code CLI tags tool return content to help AI distinguish tool output from user instructions.
 
-> MCP 工具返回的内容可能包含恶意指令，试图诱导 AI 执行危险操作。
-> Kimi Code CLI 会对工具返回内容进行标记，帮助 AI 区分工具输出和用户指令。
-
-**建议**:
-- 只使用可信来源的 MCP 服务器
-- 检查 AI 提议的操作是否合理
-- 对于高风险操作保持手动审批
+**Suggestion**:
+- Only use MCP servers from trusted sources
+- Check whether the actions proposed by the AI are reasonable
+- Maintain manual approvals for high-risk operations
 
 ---
 
-## 7. 使用示例
+## 7. Usage examples
 
-### 7.1 添加 Context7 搜索工具
+### 7.1 Add Context7 search tool
 
 ```bash
 # 1. 添加 Context7 HTTP 服务器
@@ -921,8 +905,7 @@ kimi
 # AI 会调用 context7_search 工具，并请求你的批准
 # 批准后，AI 会显示搜索结果
 ```
-
-### 7.2 添加 Linear 集成
+### 7.2 Add Linear integration
 
 ```bash
 # 1. 添加 Linear OAuth 服务器
@@ -941,8 +924,7 @@ kimi
 > 列出我的 Linear issues
 > 创建一个新的 Linear issue：修复 MCP 连接超时问题
 ```
-
-### 7.3 添加本地 Chrome DevTools
+### 7.3 Add local Chrome DevTools
 
 ```bash
 # 1. 添加 stdio 服务器
@@ -957,8 +939,7 @@ kimi
 > 打开浏览器并访问 https://github.com/MoonshotAI/kimi-cli
 > 截图当前页面
 ```
-
-### 7.4 临时加载配置
+### 7.4 Temporarily load configuration
 
 ```bash
 # 从文件加载
@@ -977,36 +958,36 @@ kimi --mcp-config '{
 
 ---
 
-## 8. 总结与思考
+## 8. Summary and reflections
 
-### 8.1 架构亮点
+### 8.1 Architecture Highlights
 
-1. **标准化设计**
-   - 完全符合 MCP 协议规范
-   - 可与任何 MCP 服务器集成
-   - 配置格式与 Claude Desktop 等其他客户端兼容
+1. **Standardized Design**
+   - Fully compliant with MCP protocol specifications
+   - Integrates with any MCP server
+   - Configuration format compatible with other clients such as Claude Desktop
 
-2. **异步并发**
-   - 多服务器并发连接
-   - 后台加载不阻塞启动
-   - 高效的资源利用
+2. **Asynchronous Concurrency**
+   - Multiple server concurrent connections
+   - Background loading does not block startup
+   - Efficient resource utilization
 
-3. **安全优先**
-   - 所有工具调用需要审批
-   - OAuth Token 安全存储
-   - 提示词注入防护
+3. **Safety first**
+   - All tool calls require approval
+   - OAuth Token secure storage
+   - Prompt word injection protection
 
-4. **用户体验**
-   - 清晰的命令行界面
-   - 实时状态通知
-   - 详细的错误提示
+4. **User Experience**
+   - Clear command line interface
+   - Real-time status notifications
+   - Detailed error message
 
-5. **容错性**
-   - 单个服务器失败不影响其他
-   - 完善的错误处理
-   - 超时保护
+5. **Fault Tolerance**
+   - Failure of a single server does not affect others
+   - Perfect error handling
+   - Timeout protection
 
-### 8.2 可借鉴的设计
+### 8.2 Designs that can be learned from
 
 1. **分层架构**
    - CLI 层、配置层、核心层、客户端层清晰分离
@@ -1016,63 +997,63 @@ kimi --mcp-config '{
    - MCPServerInfo 的状态机设计
    - 清晰的状态转换逻辑
 
-3. **工具封装**
-   - MCPTool 统一封装 MCP 工具
-   - 隐藏底层通信细节
+3. **Tool Encapsulation**
+   - MCPTool unified encapsulation MCP tool
+   - Hide underlying communication details
 
-4. **配置验证**
-   - 使用 Pydantic 验证配置
-   - 早期发现配置错误
+4. **Configuration Verification**
+   - Verify configuration using Pydantic
+   - Early detection of configuration errors
 
-### 8.3 改进空间
+### 8.3 Room for improvement
 
-1. **工具发现**
-   - 可以增加工具推荐功能
-   - 根据用户行为推荐相关 MCP 服务器
+1. **Tool Discovery**
+   - Can add tool recommendation function
+   - Recommend relevant MCP servers based on user behavior
 
-2. **性能监控**
-   - 记录每个服务器的响应时间
-   - 自动调整超时配置
+2. **Performance Monitoring**
+   - Record the response time of each server
+   - Automatically adjust timeout configuration
 
-3. **缓存机制**
-   - 缓存常用工具的调用结果
-   - 减少重复请求
+3. **Caching mechanism**
+   - Cache the call results of commonly used tools
+   - Reduce duplicate requests
 
-4. **批量操作**
-   - 支持批量添加/删除服务器
-   - 批量测试连接
+4. **Batch operation**
+   -Support adding/removing servers in batches
+   - Batch test connections
 
-### 8.4 适用场景
+### 8.4 Applicable scenarios
 
-Kimi CLI 的 MCP 实现特别适合以下场景：
+Kimi CLI's MCP implementation is particularly suitable for the following scenarios:
 
-1. **开发工具链集成**
-   - 与 GitHub、GitLab、Jira 等集成
-   - 自动化开发流程
+1. **Development tool chain integration**
+   - Integrates with GitHub, GitLab, Jira and more
+   - Automated development process
 
-2. **数据分析**
-   - 连接数据库 MCP 服务器
-   - 执行 SQL 查询和分析
+2. **Data Analysis**
+   - Connect to database MCP server
+   - Perform SQL queries and analysis
 
-3. **内容创作**
-   - 集成搜索、翻译、摘要工具
-   - 提高创作效率
+3. **Content Creation**
+   - Integrated search, translation and summarization tools
+   - Improve creative efficiency
 
-4. **运维自动化**
-   - 连接监控、告警系统
-   - 自动化运维操作
+4. **Operation and Maintenance Automation**
+   - Connect to monitoring and alarm systems
+   - Automated operation and maintenance operations
 
 ---
 
-## 9. LLM 调用 MCP 工具的完整代码流程
+## 9. The complete code flow of LLM calling MCP tool
 
-本节详细展示 Kimi CLI 中 LLM 如何调用 MCP 工具的完整代码链路，从 LLM 生成工具调用到最终执行 MCP 服务器调用。
+This section shows in detail the complete code link of how LLM calls the MCP tool in Kimi CLI, from the LLM generation tool call to the final execution of the MCP server call.
 
-### 9.1 核心调用链路
+### 9.1 Core call link
 
-#### kosong.step - LLM 工具调用的核心引擎
+#### kosong.step - The core engine called by LLM tools
 
-**位置**: `packages/kosong/src/kosong/__init__.py:104-180`
+**Location**: `packages/kosong/src/kosong/__init__.py:104-180`
 
 ```python
 async def step(
@@ -1156,16 +1137,15 @@ async def step(
         tool_result_futures,        # 工具结果 Future
     )
 ```
+**Key Points**:
+- The `step()` function is the core bridge between LLM and tools.
+- It calls the LLM API, passing in the definitions of all available tools
+- When LLM decides to call a tool, it is handled through the `on_tool_call` callback
+- Dispatching tool calls to `toolset.handle()` which will route to the correct tool (including MCP tools)
 
-**关键点**：
-- `step()` 函数是 LLM 与工具交互的核心桥梁
-- 它调用 LLM API，传入所有可用工具的定义
-- 当 LLM 决定调用工具时，通过 `on_tool_call` 回调处理
-- 将工具调用分发给 `toolset.handle()`，后者会路由到正确的工具（包括 MCP 工具）
+#### KimiToolset.handle - Tool call dispatcher
 
-#### KimiToolset.handle - 工具调用分发器
-
-**位置**: `src/kimi_cli/soul/toolset.py:97-124`
+**Location**: `src/kimi_cli/soul/toolset.py:97-124`
 
 ```python
 def handle(self, tool_call: ToolCall) -> HandleResult:
@@ -1226,15 +1206,14 @@ def handle(self, tool_call: ToolCall) -> HandleResult:
         # 清理上下文
         current_tool_call.reset(token)
 ```
+**Key Points**:
+- `handle()` is the central dispatcher of tool calls
+- It finds tools, parses parameters, and creates asynchronous tasks
+- Supports all types of tools (built-in tools, MCP tools, user-defined tools)
 
-**关键点**：
-- `handle()` 是工具调用的中央分发器
-- 它查找工具、解析参数、创建异步任务
-- 支持所有类型的工具（内置工具、MCP 工具、用户自定义工具）
+#### MCPTool.call - MCP tool executor
 
-#### MCPTool.call - MCP 工具执行器
-
-**位置**: `src/kimi_cli/soul/toolset.py:380-405`
+**Location**: `src/kimi_cli/soul/toolset.py:380-405`
 
 ```python
 async def __call__(self, **kwargs) -> ToolReturnValue:
@@ -1279,16 +1258,15 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
             )
         raise
 ```
+**Key Points**:
+- **User Approval**: The MCP tool must be confirmed by the user before being called.
+- **fastmcp client**: Use the fastmcp library to communicate with the MCP server
+- **Timeout Control**: Prevent long-running tools from blocking
+- **Error Handling**: Capture and convert various error conditions
 
-**关键点**：
-- **用户审批**：MCP 工具调用前必须经过用户确认
-- **fastmcp 客户端**：使用 fastmcp 库与 MCP 服务器通信
-- **超时控制**：防止长时间运行的工具阻塞
-- **错误处理**：捕获并转换各种错误情况
+#### kimisoul._step - Complete Step execution process
 
-#### kimisoul._step - 完整的 Step 执行流程
-
-**位置**: `src/kimi_cli/soul/kimisoul.py:383-456`
+**Location**: `src/kimi_cli/soul/kimisoul.py:383-456`
 
 ```python
 async def _step(self) -> StepOutcome | None:
@@ -1326,10 +1304,9 @@ async def _step(self) -> StepOutcome | None:
         assistant_message=result.message
     )
 ```
+### 9.2 Process of tool registration to LLM
 
-### 9.2 工具注册到 LLM 的过程
-
-#### 工具定义转换
+#### Tool definition conversion
 
 ```python
 # kosong 从 Toolset 提取工具定义
@@ -1368,13 +1345,12 @@ async def generate(
     # 处理流式响应和工具调用
     ...
 ```
+**Key Points**:
+- MCP tools are converted to standard LLM Function Calling format
+- Tool parameters are described using JSON Schema
+- LLM can call MCP tools just like built-in tools
 
-**关键点**：
-- MCP 工具被转换为标准的 LLM Function Calling 格式
-- 工具的参数使用 JSON Schema 描述
-- LLM 可以像调用内置工具一样调用 MCP 工具
-
-#### MCP 工具如何被注册
+#### How to register the MCP tool
 
 ```python
 # 1. MCP 工具创建（mcp-client.py）
@@ -1397,8 +1373,7 @@ for tool in tools:
 # 3. LLM 可以看到这些工具
 # toolset.tools 返回所有工具的 Tool 定义
 ```
-
-### 9.3 完整的调用时序图
+### 9.3 Complete call sequence diagram
 
 ```
 用户输入 "使用 context7 搜索 Python MCP 教程"
@@ -1482,8 +1457,7 @@ _kimisoul._grow_context(result, results)
     ↓
 继续下一轮 LLM 调用（包含工具结果）
 ```
-
-### 9.4 关键数据结构转换
+### 9.4 Key data structure conversion
 
 #### LLM FunctionCall → Kimi ToolCall
 
@@ -1538,32 +1512,31 @@ tool_result_message = Message(
 # 添加到对话历史
 history.append(tool_result_message)
 ```
+### 9.5 Comparison with Gemini CLI
 
-### 9.5 与 Gemini CLI 的对比
-
-| 特性 | Kimi CLI | Gemini CLI |
+|characteristic| Kimi CLI | Gemini CLI |
 |------|----------|------------|
-| **工具名称格式** | 原始工具名 (如 `context7_search`) | `mcp_{server}_{tool}` (如 `mcp_context7_search`) |
-| **LLM 集成层** | kosong 框架 | Google GenAI SDK |
-| **工具注册** | 通过 Toolset.add() | 通过 ToolRegistry |
-| **用户审批** | 在 MCPTool.call() 中 | 在 DiscoveredMCPToolInvocation 中 |
-| **结果转换** | convert_mcp_tool_result() | transformMcpContentToParts() |
-| **错误处理** | ToolError | ToolErrorType |
+|**Tool name format**|Original tool name (e.g. `context7_search`)|`mcp_{server}_{tool}` (such as `mcp_context7_search`)|
+|**LLM Integration Layer**|kosong frame| Google GenAI SDK |
+|**Tool Registration**|via Toolset.add()|By ToolRegistry|
+|**User Approval**|In MCPTool.call()|In DiscoveredMCPToolInvocation|
+|**Result Conversion**| convert_mcp_tool_result() | transformMcpContentToParts() |
+|**Error handling**| ToolError | ToolErrorType |
 
 ---
 
-## 参考资源
+## Reference resources
 
-- **GitHub 仓库**: [https://github.com/MoonshotAI/kimi-cli](https://github.com/MoonshotAI/kimi-cli)
-- **官方文档**: [https://moonshotai.github.io/kimi-cli/](https://moonshotai.github.io/kimi-cli/)
-- **MCP 协议**: [https://modelcontextprotocol.io/](https://modelcontextprotocol.io/)
-- **fastmcp 库**: [https://github.com/jlowin/fastmcp](https://github.com/jlowin/fastmcp)
+- **GitHub repository**: [https://github.com/MoonshotAI/kimi-cli](https://github.com/MoonshotAI/kimi-cli)
+- **Official Document**: [https://moonshotai.github.io/kimi-cli/](https://moonshotai.github.io/kimi-cli/)
+- **MCP protocol**: [https://modelcontextprotocol.io/](https://modelcontextprotocol.io/)
+- **fastmcp library**: [https://github.com/jlowin/fastmcp](https://github.com/jlowin/fastmcp)
 
 ---
 
-## 附录
+## Appendix
 
-### A. 核心代码文件清单
+### A. Core code file list
 
 ```
 src/kimi_cli/
@@ -1579,11 +1552,9 @@ src/kimi_cli/
 - MCPServerInfo: 服务器连接信息
 - MCPConfig: 配置定义
 ```
+### B. Configuration file example
 
-### B. 配置文件示例
-
-**~/.kimi/mcp.json**:
-```json
+**~/.kimi/mcp.json**:```json
 {
   "mcpServers": {
     "context7": {
@@ -1602,14 +1573,12 @@ src/kimi_cli/
 }
 ```
 
-**~/.kimi/config.yaml**:
-```yaml
+**~/.kimi/config.yaml**:```yaml
 mcp:
   client:
     tool_call_timeout_ms: 60000
 ```
-
-### C. 相关依赖
+### C. Related dependencies
 
 ```toml
 [dependencies]
@@ -1620,7 +1589,7 @@ pydantic = "2.12.5"
 
 ---
 
-**文档版本**: 1.0
-**最后更新**: 2026-03-11
-**作者**: AI Assistant
-**许可**: MIT License
+**Documentation version**: 1.0
+**Last updated**: 2026-03-11
+**Author**: AI Assistant
+**License**: MIT License

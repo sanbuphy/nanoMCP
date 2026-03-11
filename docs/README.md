@@ -2,6 +2,14 @@
 
 本目录包含了关于 MCP (Model Context Protocol) 协议的详细分析文档，涵盖了官方介绍和两个实际开源项目的实现案例。
 
+## 🌐 English 版本
+
+- [README (English)](./README.en.md)
+- [Official MCP Introduction (EN)](./official-mcp-introduction.en.md)
+- [Kimi CLI MCP Analysis (EN)](./kimi-cli-mcp-implementation-analysis.en.md)
+- [Gemini CLI MCP Analysis (EN)](./gemini-cli-mcp-implementation-analysis.en.md)
+- [MCP Deep Dive Guide (EN)](./mcp-deep-dive-guide.en.md)
+
 ## 📚 文档列表
 
 ### 1. [官方 MCP 介绍](./official-mcp-introduction.md)

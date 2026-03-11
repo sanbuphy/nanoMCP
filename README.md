@@ -105,6 +105,12 @@ These fake servers are registerable in:
 - `nanomcp/registry.py`: multi-MCP registration and call routing
 - `nanomcp/builtin.py`: built-in fake servers and tool handlers
 - `officialmcp/registry.py`: official MCP SDK registration wrapper
+- `stdio/mcp_stdio_server.py`: stdio transport MCP server demo
+- `stdio/mcp_stdio_client.py`: stdio transport MCP client + agent loop demo
+- `sse/mcp_sse_server.py`: SSE transport MCP server demo
+- `sse/mcp_sse_client.py`: SSE transport MCP client + agent loop demo
+- `streamable_http/mcp_streamable_http_server.py`: streamable_http transport MCP server demo
+- `streamable_http/mcp_streamable_http_client.py`: streamable_http transport MCP client + agent loop demo
 - `agent.py`: agent for custom nanomcp fake registry
 - `agent-official.py`: agent for officialmcp fake registry
 - `agent_official_mcp.py`: official MCP real integration template for tavily/context7
