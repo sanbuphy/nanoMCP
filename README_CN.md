@@ -16,6 +16,12 @@
 
 v0.1.0
 
+## docs 文档集
+
+仓库内还提供了 `docs/` 文档集（MCP 协议笔记 + 典型项目实现分析）：
+- [docs/README.md](./docs/README.md)
+- [docs/README.en.md](./docs/README.en.md)
+
 ## 安装
 
 ```bash
@@ -52,19 +58,23 @@ export TAVILY_API_KEY='your-tavily-key'
 
 ## 快速开始（本地 demo MCP server）
 
+如果你是 MCP 新手，推荐先从 `stdio/` 开始跑通和理解：它是最简单的传输，也最容易调试。
+- 先读 `stdio/mcp_stdio_server.py`，理解最小的 `initialize` / `tools/list` / `tools/call` 是怎么实现的。
+- 再读 `stdio/mcp_stdio_client.py`，理解 client 如何启动 server、把 MCP tools 映射成 OpenAI tools，并跑通循环。
+
 **stdio**
 ```bash
-python stdio/mcp_stdio_client.py "3加5等于多少"
+python stdio/mcp_stdio_client.py "What is 3 + 5?"
 ```
 
 **SSE（HTTP POST + SSE 响应）**
 ```bash
-python sse/mcp_sse_client.py "北京天气怎么样"
+python sse/mcp_sse_client.py "What's the weather in Beijing?"
 ```
 
 **Streamable HTTP（HTTP JSON 请求/响应）**
 ```bash
-python streamable_http/mcp_streamable_http_client.py "先算 7*6 再算 + 5"
+python streamable_http/mcp_streamable_http_client.py "Compute 7 * 6, then add 5."
 ```
 
 这些 client 会自动启动对应的 server 子进程。

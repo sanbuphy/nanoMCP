@@ -16,6 +16,12 @@ This repository is intentionally small and easy to read: each transport is a sel
 
 v0.1.0
 
+## Docs
+
+There is also a `docs/` folder with MCP reading notes and deeper implementation analyses:
+- [docs/README.en.md](./docs/README.en.md)
+- [docs/README.md](./docs/README.md) (Chinese)
+
 ## Install
 
 ```bash
@@ -52,19 +58,23 @@ Some scripts support StepFun-compatible env vars (as a fallback):
 
 ## Quick start (local demo MCP server)
 
+If you're new to MCP, start with `stdio/` first. It is the simplest transport and the easiest to debug:
+- Read `stdio/mcp_stdio_server.py` to see the minimal `initialize` / `tools/list` / `tools/call` implementation.
+- Then read `stdio/mcp_stdio_client.py` to see how the client spawns the server, converts MCP tools to OpenAI tools, and runs the loop.
+
 **stdio**
 ```bash
-python stdio/mcp_stdio_client.py "3加5等于多少"
+python stdio/mcp_stdio_client.py "What is 3 + 5?"
 ```
 
 **SSE (HTTP POST + SSE response)**
 ```bash
-python sse/mcp_sse_client.py "北京天气怎么样"
+python sse/mcp_sse_client.py "What's the weather in Beijing?"
 ```
 
 **Streamable HTTP (HTTP JSON request/response)**
 ```bash
-python streamable_http/mcp_streamable_http_client.py "先算 7*6 再算 + 5"
+python streamable_http/mcp_streamable_http_client.py "Compute 7 * 6, then add 5."
 ```
 
 Each client spins up its matching server process automatically.

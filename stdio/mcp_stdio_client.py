@@ -1,6 +1,6 @@
 """
 MCP Client + OpenAI Agent
-用法: python stdio/mcp_stdio_client.py "3加5等于多少"
+Usage: python stdio/mcp_stdio_client.py "What is 3 + 5?"
 """
 import os, sys, json, subprocess
 from openai import OpenAI
@@ -38,7 +38,7 @@ def run_agent(user_message, max_iterations=5):
     ]
     llm = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"), base_url=os.environ.get("OPENAI_BASE_URL"))
     messages = [
-        {"role": "system", "content": "你是一个有用的助手。简洁回答。"},
+        {"role": "system", "content": "You are a helpful assistant. Be concise."},
         {"role": "user", "content": user_message},
     ]
     for _ in range(max_iterations):
@@ -60,5 +60,5 @@ def run_agent(user_message, max_iterations=5):
 
 
 if __name__ == "__main__":
-    task = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "3加5等于多少"
+    task = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "What is 3 + 5?"
     print(run_agent(task))
