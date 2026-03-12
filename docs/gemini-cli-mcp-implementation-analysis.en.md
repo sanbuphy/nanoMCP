@@ -58,48 +58,48 @@ Gemini CLI is an open source AI command line tool developed by Google that bring
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         用户交互层                               │
+│ User interaction layer │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │ CLI 命令     │  │ 交互式 Shell │  │ VSCode 扩展  │          │
-│  │ gemini mcp   │  │  /mcp 命令   │  │  IDE 集成    │          │
+│ │ CLI Commands │ │ Interactive Shell │ │ VSCode Extensions │ │
+│ │ gemini mcp │ │ /mcp command │ │ IDE integration │ │
 │  └──────────────┘  └──────────────┘  └──────────────┘          │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                         配置管理层                               │
+│Configure management layer │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ ~/.gemini/settings.json (用户配置)                     │     │
-│  │ .gemini/settings.json (项目配置)                       │     │
-│  │ mcpServers 配置                                         │     │
+│ │ ~/.gemini/settings.json (user configuration) │ │
+│ │ .gemini/settings.json (project configuration) │ │
+│ │ mcpServers configuration │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                         核心处理层                               │
+│ Core processing layer │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐  │
 │  │ McpClientManager │  │   McpClient      │  │ Discovered   │  │
-│  │  (生命周期管理)  │  │  (单服务器管理)  │  │ MCPTool      │  │
+│ │ (Life cycle management) │ │ (Single server management) │ │ MCPTool │ │
 │  └──────────────────┘  └──────────────────┘  └──────────────┘  │
 │  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐  │
 │  │  ToolRegistry    │  │  PromptRegistry │  │Resource      │  │
-│  │  (工具注册表)    │  │  (提示词注册)   │  │Registry      │  │
+│ │ (Tool Registry) │ │ (Prompt word registration) │ │Registry │ │
 │  └──────────────────┘  └──────────────────┘  └──────────────┘  │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                      MCP SDK 客户端层                            │
+│ MCP SDK Client Layer │
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │ @modelcontextprotocol/sdk/client/Client                │     │
-│  │ - StdioClientTransport (本地进程)                       │     │
+│ │ - StdioClientTransport (local process) │ │
 │  │ - SSEClientTransport (Server-Sent Events)              │     │
-│  │ - StreamableHTTPClientTransport (HTTP 流式传输)        │     │
+│ │ - StreamableHTTPClientTransport (HTTP streaming) │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                      外部 MCP 服务器层                            │
+│ External MCP Server Layer │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
-│  │自定义服务器│  │ GitHub   │  │ Notion   │  │ Google   │       │
+│ │Custom Server│ │ GitHub │ │ Notion │ │ Google │ │
 │  └──────────┘  └──────────┘  └──────────┘  └──────────┘       │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -108,25 +108,25 @@ Gemini CLI is an open source AI command line tool developed by Google that bring
 ```
 packages/core/src/
 ├── tools/
-│   ├── mcp-client.ts           # MCP 客户端核心 (1000+ 行)
-│   ├── mcp-client-manager.ts   # MCP 客户端管理器 (500+ 行)
-│   ├── mcp-tool.ts             # MCP 工具封装 (600+ 行)
-│   └── tool-registry.ts        # 工具注册表
+│ ├── mcp-client.ts # MCP client core (1000+ lines)
+│ ├── mcp-client-manager.ts # MCP client manager (500+ lines)
+│ ├── mcp-tool.ts # MCP tool package (600+ lines)
+│ └── tool-registry.ts # Tool registry
 ├── mcp/
-│   ├── google-auth-provider.ts         # Google 认证提供者
-│   ├── sa-impersonation-provider.ts    # 服务账号模拟
-│   ├── oauth-provider.ts               # OAuth 提供者
-│   └── oauth-token-storage.ts          # OAuth Token 存储
+│ ├── google-auth-provider.ts # Google Authentication Provider
+│ ├── sa-impersonation-provider.ts # Service account imitation
+│ ├── oauth-provider.ts # OAuth provider
+│ └── oauth-token-storage.ts # OAuth Token storage
 ├── prompts/
-│   └── prompt-registry.ts      # 提示词注册表
+│ └── prompt-registry.ts # Prompt word registry
 └── resources/
-    └── resource-registry.ts    # 资源注册表
+    └── resource-registry.ts # Resource registry
 
 packages/cli/src/commands/mcp/
-├── add.ts                      # 添加服务器命令
-├── remove.ts                   # 移除服务器命令
-├── list.ts                     # 列出服务器命令
-└── enableDisable.ts            # 启用/禁用命令
+├── add.ts # Add server command
+├── remove.ts # Remove server command
+├── list.ts # List server commands
+└── enableDisable.ts # Enable/disable command
 ```
 
 ---
@@ -237,7 +237,7 @@ async function addMcpServer(
 
   let newServer: Partial<MCPServerConfig> = {};
 
-  // 解析 headers
+  // Parse headers
   const headers = header?.reduce((acc, curr) => {
     const [key, ...valueParts] = curr.split(':');
     const value = valueParts.join(':').trim();
@@ -247,7 +247,7 @@ async function addMcpServer(
     return acc;
   }, {} as Record<string, string>);
 
-  // 根据传输类型构建配置
+  // Build configuration based on transport type
   switch (transport) {
     case 'sse':
       newServer = {
@@ -294,7 +294,7 @@ async function addMcpServer(
       break;
   }
 
-  // 保存配置
+  //Save configuration
   const mcpServers = settings.forScope(settingsScope).settings.mcpServers || {};
   mcpServers[name] = newServer as MCPServerConfig;
   settings.setValue(settingsScope, 'mcpServers', mcpServers);
@@ -303,21 +303,21 @@ async function addMcpServer(
 **Usage Example**:
 
 ```bash
-# 添加 stdio 服务器
+# Add stdio server
 gemini mcp add python-server python -m my_mcp_server -- --port 8080
 
-# 添加 SSE 服务器
+#Add SSE server
 gemini mcp add --transport sse context7 https://mcp.context7.com/sse
 
-# 添加 HTTP 服务器（带认证）
+# Add HTTP server (with authentication)
 gemini mcp add --transport http \
   --header "Authorization: Bearer $TOKEN" \
   secure-server https://api.example.com/mcp
 
-# 添加信任的服务器
+#Add trusted server
 gemini mcp add --trust local-tools python server.py
 
-# 添加带工具过滤的服务器
+# Add a server with tool filtering
 gemini mcp add --include-tools safe_tool,read_file \
   --exclude-tools delete_file filtered-server python server.py
 ```
@@ -347,7 +347,7 @@ export class McpClientManager {
   ) {}
 
   /**
-   * 发现所有配置的 MCP 服务器
+   * Discover all configured MCP servers
    */
   async discoverAllServers(): Promise<void> {
     if (this.discoveryState === MCPDiscoveryState.IN_PROGRESS) {
@@ -359,7 +359,7 @@ export class McpClientManager {
     this.discoveryPromise = (async () => {
       const serverNames = Array.from(this.allServerConfigs.keys());
 
-      // 并发连接所有服务器
+      // Connect to all servers concurrently
       await Promise.allSettled(
         serverNames.map((name) => this.maybeDiscoverMcpServer(name))
       );
@@ -371,13 +371,13 @@ export class McpClientManager {
   }
 
   /**
-   * 发现单个 MCP 服务器
+   * Discover a single MCP server
    */
   private async maybeDiscoverMcpServer(
     serverName: string,
     config?: MCPServerConfig,
   ): Promise<void> {
-    // 检查是否被阻止
+    // Check if blocked
     if (this.isBlocked(serverName)) {
       this.blockedMcpServers.push({
         name: serverName,
@@ -386,12 +386,12 @@ export class McpClientManager {
       return;
     }
 
-    // 检查是否已禁用
+    // Check if disabled
     if (this.isDisabled(serverName)) {
       return;
     }
 
-    // 创建或获取客户端
+    //Create or get client
     let client = this.clients.get(serverName);
     if (!client) {
       client = new McpClient(
@@ -409,7 +409,7 @@ export class McpClientManager {
       this.clients.set(serverName, client);
     }
 
-    // 连接并发现工具
+    // Connect and discover tools
     try {
       await client.connect();
       await client.discover(this.cliConfig);
@@ -419,7 +419,7 @@ export class McpClientManager {
   }
 
   /**
-   * 发射诊断消息
+   * Emit diagnostic messages
    */
   emitDiagnostic(
     severity: 'info' | 'warning' | 'error',
@@ -427,28 +427,28 @@ export class McpClientManager {
     error?: unknown,
     serverName?: string,
   ) {
-    // 记录错误
+    // Log errors
     if (severity === 'error' || severity === 'warning') {
       if (serverName) {
         this.lastErrors.set(serverName, message);
       }
     }
 
-    // 去重
+    // Remove duplicates
     const diagnosticKey = `${severity}:${message}`;
     const previousStatus = this.shownDiagnostics.get(diagnosticKey);
 
-    // 如果用户已交互，显示详细消息
+    // If the user has interacted, display detailed messages
     if (this.userInteractedWithMcp) {
       if (previousStatus === 'verbose') {
-        return; // 已显示过
+        return; //Already shown
       }
       this.shownDiagnostics.set(diagnosticKey, 'verbose');
       coreEvents.emitFeedback(severity, message, error);
       return;
     }
 
-    // 静默模式，减少打扰
+    // Silent mode to reduce interruptions
     if (previousStatus) {
       return;
     }
@@ -463,21 +463,21 @@ export class McpClientManager {
 
 ```typescript
 export enum MCPServerStatus {
-  DISCONNECTED = 'disconnected',   // 未连接或错误
-  DISCONNECTING = 'disconnecting', // 正在断开
-  CONNECTING = 'connecting',       // 正在连接
-  CONNECTED = 'connected',         // 已连接
-  BLOCKED = 'blocked',             // 被阻止
-  DISABLED = 'disabled',           // 已禁用
+  DISCONNECTED = 'disconnected', // Not connected or error
+  DISCONNECTING = 'disconnecting', // Disconnecting
+  CONNECTING = 'connecting', // Connecting
+  CONNECTED = 'connected', // Connected
+  BLOCKED = 'blocked', // blocked
+  DISABLED = 'disabled', // Disabled
 }
 ```
 **Discovery State** (`MCPDiscoveryState`):
 
 ```typescript
 export enum MCPDiscoveryState {
-  NOT_STARTED = 'not_started',     // 未开始
-  IN_PROGRESS = 'in_progress',     // 进行中
-  COMPLETED = 'completed',         // 已完成
+  NOT_STARTED = 'not_started', // not started
+  IN_PROGRESS = 'in_progress', // In progress
+  COMPLETED = 'completed', // Completed
 }
 ```
 
@@ -508,7 +508,7 @@ export class McpClient implements McpProgressReporter {
   ) {}
 
   /**
-   * 连接到 MCP 服务器
+   * Connect to MCP server
    */
   async connect(): Promise<void> {
     if (this.status !== MCPServerStatus.DISCONNECTED) {
@@ -518,7 +518,7 @@ export class McpClient implements McpProgressReporter {
     this.updateStatus(MCPServerStatus.CONNECTING);
 
     try {
-      // 创建客户端和传输
+      // Create client and transport
       this.client = await connectToMcpServer(
         this.clientVersion,
         this.serverName,
@@ -528,10 +528,10 @@ export class McpClient implements McpProgressReporter {
         this.cliConfig,
       );
 
-      // 注册通知处理器
+      //Register notification handler
       this.registerNotificationHandlers();
 
-      // 错误处理
+      // error handling
       const originalOnError = this.client.onerror;
       this.client.onerror = (error) => {
         if (this.status !== MCPServerStatus.CONNECTED) {
@@ -550,22 +550,22 @@ export class McpClient implements McpProgressReporter {
   }
 
   /**
-   * 发现工具和提示词
+   * Discovery tools and hint words
    */
   async discover(cliConfig: McpContext): Promise<void> {
     this.assertConnected();
 
-    // 并发获取工具、提示词和资源
+    // Concurrently obtain tools, prompt words and resources
     const prompts = await this.fetchPrompts();
     const tools = await this.discoverTools(cliConfig);
     const resources = await this.discoverResources();
 
-    // 检查是否有可用内容
+    // Check if content is available
     if (prompts.length === 0 && tools.length === 0 && resources.length === 0) {
       throw new Error('No prompts, tools, or resources found on the server.');
     }
 
-    // 注册到相应的注册表
+    //Register to the corresponding registry
     for (const prompt of prompts) {
       this.promptRegistry.registerPrompt(prompt);
     }
@@ -574,10 +574,10 @@ export class McpClient implements McpProgressReporter {
     }
     this.toolRegistry.sortTools();
 
-    // 更新资源注册表
+    //Update resource registry
     this.updateResourceRegistry(resources);
 
-    // 验证策略规则中的 MCP 工具名称
+    //Verify MCP tool name in policy rules
     try {
       const discoveredToolNames = tools.map((t) => t.serverToolName);
       const policyRules = cliConfig.getPolicyEngine?.()?.getRules() ?? [];
@@ -590,19 +590,19 @@ export class McpClient implements McpProgressReporter {
         coreEvents.emitFeedback('warning', warning);
       }
     } catch {
-      // 策略引擎可能不可用，静默跳过
+      // The policy engine may be unavailable and will be skipped silently.
     }
   }
 
   /**
-   * 断开连接
+   * Disconnect
    */
   async disconnect(): Promise<void> {
     if (this.status !== MCPServerStatus.CONNECTED) {
       return;
     }
 
-    // 从所有注册表中移除
+    // Remove from all registries
     this.toolRegistry.removeMcpToolsByServer(this.serverName);
     this.promptRegistry.removePromptsByServer(this.serverName);
     this.resourceRegistry.removeResourcesByServer(this.serverName);
@@ -634,7 +634,7 @@ async function connectToMcpServer(
   workspaceContext: WorkspaceContext,
   cliConfig: McpContext,
 ): Promise<Client> {
-  // 创建传输
+  //Create transfer
   const transport = await createTransport(
     serverName,
     serverConfig,
@@ -643,16 +643,16 @@ async function connectToMcpServer(
     cliConfig,
   );
 
-  // 创建客户端
+  //Create client
   const client = new Client({
     name: `gemini-cli-${clientVersion}`,
     version: clientVersion,
   }, {
-    // 使用 Ajv 进行 JSON Schema 验证
+    // Use Ajv for JSON Schema validation
     validator: new AjvJsonSchemaValidator(),
   });
 
-  // 连接
+  // connect
   await client.connect(transport);
 
   return client;
@@ -667,9 +667,9 @@ async function createTransport(
 ): Promise<Transport> {
   let transport: Transport;
 
-  // 根据配置创建相应的传输
+  //Create the corresponding transport according to the configuration
   if (serverConfig.url) {
-    // SSE 传输
+    // SSE transport
     const options: SSEClientTransportOptions = {
       url: new URL(serverConfig.url),
       eventSourceOptions: {
@@ -677,7 +677,7 @@ async function createTransport(
       },
     };
 
-    // 添加 OAuth 认证
+    //Add OAuth authentication
     if (serverConfig.authProviderType) {
       const authProvider = createAuthProvider(serverConfig, cliConfig);
       options.eventSourceOptions.headers = {
@@ -688,13 +688,13 @@ async function createTransport(
 
     transport = new SSEClientTransport(options);
   } else if (serverConfig.httpUrl) {
-    // HTTP 流式传输
+    // HTTP streaming
     const options: StreamableHTTPClientTransportOptions = {
       url: new URL(serverConfig.httpUrl),
       headers: serverConfig.headers,
     };
 
-    // 添加 OAuth 认证
+    //Add OAuth authentication
     if (serverConfig.authProviderType) {
       const authProvider = createAuthProvider(serverConfig, cliConfig);
       options.headers = {
@@ -705,7 +705,7 @@ async function createTransport(
 
     transport = new StreamableHTTPClientTransport(options);
   } else if (serverConfig.command) {
-    // Stdio 传输
+    // Stdio transfer
     const { command, args, env, cwd } = populateMcpServerCommand(
       serverConfig,
       workspaceContext,
@@ -741,10 +741,10 @@ export const MCP_QUALIFIED_NAME_SEPARATOR = '_';
 export const MCP_TOOL_PREFIX = 'mcp_';
 
 /**
- * 生成完全限定名称
- * 格式: mcp_{serverName}_{toolName}
+ * Generate fully qualified name
+ * Format: mcp_{serverName}_{toolName}
  *
- * 示例:
+ * Example:
  * - mcp_context7_search
  * - mcp_github_create_issue
  */
@@ -764,25 +764,25 @@ export function formatMcpToolName(
 }
 
 /**
- * 生成有效的工具名称
- * - 强制添加 mcp_ 前缀
- * - 替换无效字符为下划线
- * - 确保以字母或下划线开头
- * - 截断过长的名称（最大 64 字符）
+ * Generate valid tool names
+ * - Force mcp_ prefix
+ * - replace invalid characters with underscores
+ * - make sure it starts with a letter or underscore
+ * - truncate names that are too long (maximum 64 characters)
  */
 export function generateValidName(name: string) {
-  // 强制添加 mcp_ 前缀
+  // Forced to add mcp_ prefix
   let validToolname = name.startsWith('mcp_') ? name : `mcp_${name}`;
 
-  // 替换无效字符
+  //Replace invalid characters
   validToolname = validToolname.replace(/[^a-zA-Z0-9_\-.:]/g, '_');
 
-  // 确保以字母或下划线开头
+  // Make sure it starts with a letter or underscore
   if (/^[^a-zA-Z_]/.test(validToolname)) {
     validToolname = `_${validToolname}`;
   }
 
-  // 截断过长的名称
+  //Truncate names that are too long
   const MAX_FUNCTION_NAME_LENGTH = 64;
   const safeLimit = MAX_FUNCTION_NAME_LENGTH - 1;
   if (validToolname.length > safeLimit) {
@@ -819,12 +819,12 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<
     private readonly _toolAnnotations?: Record<string, unknown>,
   ) {
     super(
-      // 工具名称（带前缀）
+      // Tool name (with prefix)
       nameOverride ??
         generateValidName(
           `${serverName}${MCP_QUALIFIED_NAME_SEPARATOR}${serverToolName}`
         ),
-      // 显示名称
+      // display name
       `${serverToolName} (${serverName} MCP Server)`,
       description,
       Kind.Other,
@@ -875,20 +875,20 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
     const serverAllowListKey = this.serverName;
     const toolAllowListKey = `${this.serverName}.${this.serverToolName}`;
 
-    // 信任的文件夹 + 信任的服务器
+    // Trusted folder + trusted server
     if (this.cliConfig?.isTrustedFolder() && this.trust) {
-      return false; // 无需确认
+      return false; // No confirmation required
     }
 
-    // 检查白名单
+    // Check whitelist
     if (
       DiscoveredMCPToolInvocation.allowlist.has(serverAllowListKey) ||
       DiscoveredMCPToolInvocation.allowlist.has(toolAllowListKey)
     ) {
-      return false; // 已在白名单中
+      return false; // Already in the whitelist
     }
 
-    // 需要用户确认
+    //Require user confirmation
     const confirmationDetails: ToolMcpConfirmationDetails = {
       type: 'mcp',
       title: 'Confirm MCP Tool Execution',
@@ -905,7 +905,7 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
           DiscoveredMCPToolInvocation.allowlist.add(toolAllowListKey);
         } else if (outcome === ToolConfirmationOutcome.ProceedAlwaysAndSave) {
           DiscoveredMCPToolInvocation.allowlist.add(toolAllowListKey);
-          // 持久化策略更新由调度器集中处理
+          //Persistence policy updates are centrally processed by the scheduler
         }
       },
     };
@@ -922,7 +922,7 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
       },
     ];
 
-    // 与中止信号竞争
+    //Compete with abort signal
     const rawResponseParts = await new Promise<Part[]>((resolve, reject) => {
       if (signal.aborted) {
         const error = new Error('Tool call aborted');
@@ -956,7 +956,7 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
         });
     });
 
-    // 检查是否为错误
+    // Check if it is an error
     if (this.isMCPToolError(rawResponseParts)) {
       const errorMessage = `MCP tool '${this.serverToolName}' reported tool error`;
       return {
@@ -969,7 +969,7 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
       };
     }
 
-    // 转换响应
+    //Convert response
     const transformedParts = transformMcpContentToParts(rawResponseParts);
 
     return {
@@ -979,20 +979,20 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
   }
 
   /**
-   * 检查响应是否包含工具错误
+   * Check if the response contains tool errors
    */
   isMCPToolError(rawResponseParts: Part[]): boolean {
     const functionResponse = rawResponseParts?.[0]?.functionResponse;
     const response = functionResponse?.response;
 
     if (response) {
-      // 检查顶层 isError（MCP 规范兼容）
+      // Check top-level isError (MCP specification compliant)
       const isErrorTop = (response as { isError?: boolean | string }).isError;
       if (isErrorTop === true || isErrorTop === 'true') {
         return true;
       }
 
-      // 检查嵌套错误对象（向后兼容）
+      // Check for nested error objects (backward compatibility)
       const error = (response as { error?: { isError?: boolean | string } })?.error;
       const isError = error?.isError;
       if (error && (isError === true || isError === 'true')) {
@@ -1007,7 +1007,7 @@ export class DiscoveredMCPToolInvocation extends BaseToolInvocation<
 
 ```typescript
 /**
- * 将 MCP 内容块转换为 GenAI Part 数组
+ * Convert MCP content block to GenAI Part array
  */
 function transformMcpContentToParts(sdkResponse: Part[]): Part[] {
   const funcResponse = sdkResponse?.[0]?.functionResponse;
@@ -1100,28 +1100,28 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                   1. 用户启动 gemini                            │
+│ 1. User starts gemini │
 │                  $ gemini                                       │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│               2. 加载配置 (settings.json)                       │
+│ 2. Load configuration (settings.json) │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 加载源：                                               │     │
-│  │  • ~/.gemini/settings.json (用户级)                   │     │
-│  │  • .gemini/settings.json (项目级)                     │     │
-│  │  • 扩展配置                                           │     │
+│ │ Loading source: │ │
+│ │ • ~/.gemini/settings.json (user level) │ │
+│ │ • .gemini/settings.json (project level) │ │
+│ │ • Extended configuration │ │
 │  └────────────────────────────────────────────────────────┘     │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 解析配置：                                             │     │
-│  │  • mcpServers: 服务器列表                             │     │
-│  │  • mcp.allowed: 允许的服务器                          │     │
-│  │  • mcp.excluded: 排除的服务器                         │     │
+│ │ Analysis configuration: │ │
+│ │ • mcpServers: Server list │ │
+│ │ • mcp.allowed: allowed servers │ │
+│ │ • mcp.excluded: excluded servers │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│           3. 创建 McpClientManager 和注册表                      │
+│ 3. Create McpClientManager and registry │
 │  toolRegistry = new ToolRegistry()                              │
 │  promptRegistry = new PromptRegistry()                          │
 │  resourceRegistry = new ResourceRegistry()                      │
@@ -1129,24 +1129,24 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              4. 开始 MCP 发现 (后台异步)                         │
+│ 4. Start MCP discovery (background asynchronous) │
 │  mcpManager.discoverAllServers()                                │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         5. 遍历配置的服务器                                      │
+│ 5. Traverse the configured servers │
 │  for serverName in Object.keys(mcpServers):                     │
 │    ┌────────────────────────────────────────────────────────┐   │
-│    │ 检查：                                                  │   │
-│    │  • 是否在 allowed 列表中？                             │   │
-│    │  • 是否在 excluded 列表中？                            │   │
-│    │  • 是否被启用？                                        │   │
-│    │  • 是否被阻止（管理策略）？                            │   │
+│ │ Check: │ │
+│ │ • Is it in the allowed list?                             │ │
+│ │ • Is it in the excluded list?                            │ │
+│ │ • Is it enabled?                                        │ │
+│ │ • Blocked (admin policy)?                            │ │
 │    └────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         6. 为每个服务器创建 McpClient                            │
+│ 6. Create McpClient for each server │
 │  client = new McpClient(                                        │
 │    serverName,                                                  │
 │    serverConfig,                                                │
@@ -1158,7 +1158,7 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              7. 并发连接所有服务器                               │
+│ 7. Connect to all servers concurrently │
 │  Promise.allSettled([                                          │
 │    client1.connect(),                                           │
 │    client2.connect(),                                           │
@@ -1168,9 +1168,9 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         8. 对于每个连接成功的服务器                              │
+│ 8. For each successfully connected server │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 并发发现：                                             │     │
+│ │ Concurrent Discovery: │ │
 │  │  • tools = client.discoverTools()                     │     │
 │  │  • prompts = client.fetchPrompts()                    │     │
 │  │  • resources = client.discoverResources()             │     │
@@ -1178,70 +1178,70 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              9. 工具发现和注册                                   │
+│ 9. Tool discovery and registration │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 对于每个工具：                                          │     │
-│  │  1. 获取工具定义（名称、描述、参数 schema）             │     │
-│  │  2. 应用过滤器（includeTools/excludeTools）            │     │
-│  │  3. 生成完全限定名称：mcp_{server}_{tool}             │     │
-│  │  4. 清理和验证 schema                                  │     │
-│  │  5. 创建 DiscoveredMCPTool 实例                        │     │
-│  │  6. 注册到 ToolRegistry                                │     │
-│  │  7. 排序工具                                           │     │
+│ │ For each tool: │ │
+│ │ 1. Get tool definition (name, description, parameter schema) │ │
+│ │ 2. Apply filters (includeTools/excludeTools) │ │
+│ │ 3. Generate fully qualified name: mcp_{server}_{tool} │ │
+│ │ 4. Clean and validate schema │ │
+│ │ 5. Create DiscoveredMCPTool instance │ │
+│ │ 6. Register to ToolRegistry │ │
+│ │ 7. Sorting Tools │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              10. 提示词注册                                       │
+│ 10. Prompt word registration │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 对于每个提示词：                                        │     │
-│  │  1. 获取提示词定义（名称、参数、模板）                  │     │
-│  │  2. 注册为斜杠命令：/{promptName}                      │     │
-│  │  3. 添加到 PromptRegistry                              │     │
+│ │ For each prompt word: │ │
+│ │ 1. Get the prompt word definition (name, parameters, template) │ │
+│ │ 2. Register as slash command: /{promptName} │ │
+│ │ 3. Add to PromptRegistry │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              11. 资源注册                                        │
+│ 11. Resource Registration │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 对于每个资源：                                          │     │
-│  │  1. 获取资源 URI 和元数据                              │     │
-│  │  2. 注册到 ResourceRegistry                            │     │
-│  │  3. 支持 @server://resource/path 语法                  │     │
+│ │ For each resource: │ │
+│ │ 1. Get resource URI and metadata │ │
+│ │ 2. Register to ResourceRegistry │ │
+│ │ 3. Support @server://resource/path syntax │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              12. 完成发现                                        │
+│ 12. Complete the discovery │
 │  discoveryState = MCPDiscoveryState.COMPLETED                   │
 │                                                                  │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 显示状态：                                             │     │
-│  │  • "Connected" - 成功                                  │     │
-│  │  • "Disconnected" - 失败（静默模式）                   │     │
+│ │ Display status: │ │
+│ │ • "Connected" - Success │ │
+│ │ • "Disconnected" - failed (silent mode) │ │
 │  │  • "MCP issues detected. Run /mcp list for status."    │     │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              13. 等待用户输入                                    │
+│ 13. Waiting for user input │
 └─────────────────────────────────────────────────────────────────┘
 ```
 ### 4.2 Tool calling flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                  用户输入问题                                    │
-│  > 使用 context7 搜索 Python MCP 教程                           │
+│ User input issues │
+│ > Search Python MCP tutorial using context7 │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              Gemini 分析并决定调用工具                           │
-│  识别需要使用 mcp_context7_search 工具                          │
+│ Gemini analyzes and decides to call tools │
+│Identification requires the use of the mcp_context7_search tool │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                    生成 FunctionCall                             │
+│ Generate FunctionCall │
 │  {                                                              │
 │    "name": "mcp_context7_search",                               │
 │    "args": {                                                    │
@@ -1254,10 +1254,10 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 ┌─────────────────────────────────────────────────────────────────┐
 │            ToolRegistry.find("mcp_context7_search")             │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 查找工具：                                          │     │
+│ │ 1. Search tool: │ │
 │  │    tool = toolRegistry._toolDict["mcp_context7_search"]│     │
 │  │                                                        │     │
-│  │ 2. 找到 DiscoveredMCPTool 实例                        │     │
+│ │ 2. Find the DiscoveredMCPTool instance │ │
 │  │    - serverName: "context7"                            │     │
 │  │    - serverToolName: "search"                          │     │
 │  │    - trust: false                                      │     │
@@ -1266,34 +1266,34 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │         tool.createInvocation(params, messageBus)              │
-│         创建 DiscoveredMCPToolInvocation                        │
+│ Create DiscoveredMCPToolInvocation │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
 │              invocation.getConfirmationDetails()               │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 检查确认条件：                                         │     │
-│  │  • isTrustedFolder() && trust → 跳过确认              │     │
-│  │  • allowlist.has(serverName) → 跳过确认               │     │
-│  │  • allowlist.has(toolName) → 跳过确认                 │     │
-│  │  • 否则 → 显示确认对话框                              │     │
+│ │ Check and confirm conditions: │ │
+│ │ • isTrustedFolder() && trust → Skip confirmation │ │
+│ │ • allowlist.has(serverName) → Skip confirmation │ │
+│ │ • allowlist.has(toolName) → Skip confirmation │ │
+│ │ • Otherwise → Show confirmation dialog │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              用户确认（如需要）                                  │
+│ User confirmation (if required) │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 确认对话框：                                           │     │
+│ │ Confirmation dialog box: │ │
 │  │ ┌────────────────────────────────────────────┐        │     │
-│  │  │ 即将执行 MCP 工具调用                   │        │     │
+│ │ │ MCP tool call is about to be executed │ │ │
 │  │  │ ┌──────────────────────────────────────┐   │        │     │
-│  │  │  │ 服务器: context7                    │   │        │     │
-│  │  │  │ 工具: search                         │   │        │     │
-│  │  │  │ 参数: {"query": "...", "limit": 10} │   │        │     │
+│ │ │ │ Server: context7 │ │ │ │
+│ │ │ │ Tools: search │ │ │ │
+│ │ │ │ Parameters: {"query": "...", "limit": 10} │ │ │ │
 │  │  │  └──────────────────────────────────────┘   │        │     │
 │  │  │                                              │        │     │
-│  │  │ [执行一次] [总是允许此工具] [总是允许此服务器] │   │        │     │
-│  │  │ [取消]                                       │   │        │     │
+│ │ │ [Execute once] [Always allow this tool] [Always allow this server] │ │ │ │
+│ │ │ [Cancel] │ │ │ │
 │  │  └────────────────────────────────────────────┘        │     │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
@@ -1301,19 +1301,19 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 ┌─────────────────────────────────────────────────────────────────┐
 │              invocation.execute(signal)                        │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 标记用户已交互：                                    │     │
+│ │ 1. Mark the user has interacted: │ │
 │  │    cliConfig.setUserInteractedWithMcp()               │     │
 │  │                                                        │     │
-│  │ 2. 准备函数调用：                                      │     │
+│ │ 2. Prepare function call: │ │
 │  │    const functionCalls = [{                            │     │
-│  │      name: "search",  // 原始工具名称                  │     │
+│ │ name: "search", // Original tool name │ │
 │  │      args: params                                      │     │
 │  │    }]                                                  │     │
 │  │                                                        │     │
-│  │ 3. 设置中止信号监听：                                  │     │
+│ │ 3. Set abort signal monitoring: │ │
 │  │    signal.addEventListener('abort', onAbort)           │     │
 │  │                                                        │     │
-│  │ 4. 调用 MCP 工具：                                     │     │
+│ │ 4. Call the MCP tool: │ │
 │  │    const rawResponse = await mcpTool.callTool(        │     │
 │  │      functionCalls                                     │     │
 │  │    )                                                   │     │
@@ -1321,7 +1321,7 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              检查响应是否为错误                                  │
+│ Check if the response is an error │
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │ if (isMCPToolError(rawResponse)):                     │     │
 │  │   return {                                             │     │
@@ -1334,19 +1334,19 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              转换响应内容                                        │
+│Convert response content │
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │ transformedParts = transformMcpContentToParts(        │     │
 │  │    rawResponse                                         │     │
 │  │ )                                                      │     │
 │  │                                                        │     │
-│  │ 处理不同类型：                                         │     │
+│ │ Handles different types: │ │
 │  │  • text → { text: "..." }                             │     │
 │  │  • image → [{ text: "[Image...]" },                   │     │
 │  │             { inlineData: { mimeType, data } }]       │     │
 │  │  • audio → [{ text: "[Audio...]" },                   │     │
 │  │             { inlineData: { mimeType, data } }]       │     │
-│  │  • resource → { text: "..." } 或                      │     │
+│ │ • resource → { text: "..." } or │ │
 │  │                [{ text: "[Resource...]" },            │     │
 │  │                 { inlineData: { mimeType, data } }]   │     │
 │  │  • resource_link → { text: "Resource Link: ..." }     │     │
@@ -1354,28 +1354,28 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              返回结果                                            │
+│ Return results │
 │  {                                                              │
-│    llmContent: transformedParts,   // 给模型的内容              │
+│ llmContent: transformedParts, // Content for the model │
 │    returnDisplay: getStringifiedResultForDisplay(rawResponse)  │
 │  }                                                              │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              Gemini 处理结果并返回给用户                          │
+│ Gemini processes the results and returns them to the user │
 └─────────────────────────────────────────────────────────────────┘
 ```
 ### 4.3 OAuth authentication flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│         1. 添加 OAuth 服务器                                     │
+│ 1. Add OAuth server │
 │  $ gemini mcp add --transport sse google-workspace \            │
 │      https://workspace-mcp.googleapis.com/sse                   │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         2. 配置保存到 settings.json                              │
+│ 2. Save the configuration to settings.json │
 │  {                                                              │
 │    "mcpServers": {                                              │
 │      "google-workspace": {                                      │
@@ -1388,42 +1388,42 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         3. 首次连接（无 token）                                  │
+│ 3. First connection (without token) │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 创建 SSE 传输（无认证头）                            │     │
-│  │ 2. 尝试连接                                            │     │
-│  │ 3. 服务器返回 401 Unauthorized                         │     │
-│  │ 4. 检测到认证错误                                      │     │
+│ │ 1. Create SSE transport (without authentication header) │ │
+│ │ 2. Try to connect │ │
+│ │ 3. The server returns 401 Unauthorized │ │
+│ │ 4. Authentication error detected │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         4. OAuth 发现                                            │
+│ 4. OAuth Discovery │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 从服务器错误响应中提取 OAuth 配置                    │     │
-│  │ 2. 发现授权端点：                                       │     │
+│ │ 1. Extract OAuth configuration from server error response │ │
+│ │ 2. Discover the authorization endpoint: │ │
 │  │    - authorizationUrl                                 │     │
 │  │    - tokenUrl                                         │     │
-│  │ 3. 动态客户端注册（如支持）                            │     │
+│ │ 3. Dynamic client registration (if supported) │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         5. 触发 OAuth 流程                                       │
+│ 5. Trigger OAuth process │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 打开浏览器到授权 URL                                │     │
+│ │ 1. Open the browser to the authorization URL │ │
 │  │    https://accounts.google.com/o/oauth2/v2/auth?...    │     │
-│  │ 2. 用户登录并同意权限                                  │     │
-│  │ 3. Google 重定向到：                                   │     │
+│ │ 2. The user logs in and agrees to the permissions │ │
+│ │ 3. Google redirects to: │ │
 │  │    http://localhost:7777/oauth/callback?code=xxx       │     │
-│  │ 4. 本地服务器接收授权码                                │     │
+│ │ 4. The local server receives the authorization code │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         6. 交换 Token                                            │
+│ 6. Exchange Token │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 使用授权码交换 access token 和 refresh token        │     │
+│ │ 1. Use authorization code to exchange access token and refresh token │ │
 │  │ 2. POST to tokenUrl:                                   │     │
 │  │    {                                                    │     │
 │  │      "grant_type": "authorization_code",               │     │
@@ -1432,30 +1432,30 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 │  │      "client_id": "...",                                │     │
 │  │      ...                                                 │     │
 │  │    }                                                    │     │
-│  │ 3. 保存 token 到 ~/.gemini/mcp-oauth-tokens.json       │     │
+│ │ 3. Save token to ~/.gemini/mcp-oauth-tokens.json │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         7. 重试连接（带 token）                                  │
+│ 7. Retry connection (with token) │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 从存储加载 token                                    │     │
-│  │ 2. 添加认证头：                                        │     │
+│ │ 1. Load token from storage │ │
+│ │ 2. Add authentication header: │ │
 │  │    Authorization: Bearer {access_token}               │     │
-│  │ 3. 创建 SSE 传输（带认证头）                           │     │
-│  │ 4. 连接成功！                                          │     │
+│ │ 3. Create SSE transport (with authentication header) │ │
+│ │ 4. Connection successful!                                          │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│         8. 后续使用                                              │
+│ 8. Subsequent use │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 自动从存储加载 token                                │     │
-│  │ 2. 如果 token 过期：                                   │     │
-│  │    - 使用 refresh token 刷新                          │     │
-│  │    - 保存新 token                                      │     │
-│  │ 3. 如果 refresh token 也过期：                         │     │
-│  │    - 重新触发 OAuth 流程                               │     │
+│ │ 1. Automatically load token from storage │ │
+│ │ 2. If the token expires: │ │
+│ │ - Use refresh token to refresh │ │
+│ │ - save new token │ │
+│ │ 3. If the refresh token also expires: │ │
+│ │ - Retrigger OAuth flow │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -1474,21 +1474,21 @@ function transformResourceLinkBlock(block: McpResourceLinkBlock): Part {
 async discoverAllServers(): Promise<void> {
   const serverNames = Array.from(this.allServerConfigs.keys());
 
-  // 并发连接所有服务器
+  // Connect to all servers concurrently
   await Promise.allSettled(
     serverNames.map((name) => this.maybeDiscoverMcpServer(name))
   );
 }
 
 async discover(cliConfig: McpContext): Promise<void> {
-  // 并发获取工具、提示词和资源
+  // Concurrently obtain tools, prompt words and resources
   const [prompts, tools, resources] = await Promise.all([
     this.fetchPrompts(),
     this.discoverTools(cliConfig),
     this.discoverResources(),
   ]);
 
-  // 注册所有内容
+  // Register everything
   for (const prompt of prompts) {
     this.promptRegistry.registerPrompt(prompt);
   }
@@ -1516,10 +1516,10 @@ export const MCP_TOOL_PREFIX = 'mcp_';
 export const MCP_QUALIFIED_NAME_SEPARATOR = '_';
 
 /**
- * 所有 MCP 工具必须使用完全限定名称
- * 格式: mcp_{serverName}_{toolName}
+ * All MCP tools must use fully qualified names
+ * Format: mcp_{serverName}_{toolName}
  *
- * 示例:
+ * Example:
  * - mcp_context7_search
  * - mcp_github_create_issue
  * - mcp_google-workspace_list_documents
@@ -1555,13 +1555,13 @@ export function formatMcpToolName(
 
 ```typescript
 const ENV_SANITIZATION_CONFIG: EnvironmentSanitizationConfig = {
-  // 始终移除的变量
+  // Variables that are always removed
   alwaysRemove: [
     'GEMINI_API_KEY',
     'GOOGLE_API_KEY',
     'GOOGLE_APPLICATION_CREDENTIALS',
   ],
-  // 按模式移除的变量
+  // Variables removed by pattern
   patterns: [
     '*TOKEN*',
     '*SECRET*',
@@ -1572,7 +1572,7 @@ const ENV_SANITIZATION_CONFIG: EnvironmentSanitizationConfig = {
     '*CERT*',
     '*PRIVATE*',
   ],
-  // 明确允许的变量（用户在配置中指定的）
+  // Explicitly allowed variables (specified by the user in the configuration)
   allowed: new Set<string>(),
 };
 
@@ -1583,9 +1583,9 @@ function sanitizeEnvironment(
   const baseEnv = process.env;
   const sanitized: Record<string, string> = {};
 
-  // 只复制明确允许的变量
+  // Only copy explicitly allowed variables
   for (const [key, value] of Object.entries(baseEnv)) {
-    // 检查是否匹配任何移除模式
+    // Check if any removal pattern matches
     const shouldRemove = config.patterns.some((pattern) =>
       matchWildcard(pattern, key),
     );
@@ -1595,7 +1595,7 @@ function sanitizeEnvironment(
     }
   }
 
-  // 添加用户明确指定的环境变量（信任的）
+  // Add environment variables explicitly specified by the user (trusted)
   if (env) {
     for (const [key, value] of Object.entries(env)) {
       sanitized[key] = expandEnvVars(value);
@@ -1624,7 +1624,7 @@ async discoverTools(
 ): Promise<DiscoveredMCPTool[]> {
   this.assertConnected();
 
-  // 获取所有工具
+  // Get all tools
   const response = await this.client!.listTools(
     { timeout: options?.timeout, signal: options?.signal },
   );
@@ -1632,12 +1632,12 @@ async discoverTools(
   const tools: DiscoveredMCPTool[] = [];
 
   for (const mcpTool of response.tools || []) {
-    // 应用过滤器
+    //Apply filter
     if (!this.shouldIncludeTool(mcpTool.name)) {
       continue;
     }
 
-    // 创建工具
+    //Create tool
     const tool = new DiscoveredMCPTool(
       this.callableTool,
       this.serverName,
@@ -1661,22 +1661,22 @@ async discoverTools(
 }
 
 /**
- * 检查是否应该包含工具
+ * Check if tools should be included
  */
 private shouldIncludeTool(toolName: string): boolean {
   const config = this.serverConfig;
 
-  // excludeTools 优先于 includeTools
+  // excludeTools takes precedence over includeTools
   if (config.excludeTools && config.excludeTools.includes(toolName)) {
     return false;
   }
 
-  // 如果指定了 includeTools，只包含列表中的工具
+  // If includeTools is specified, only include tools in the list
   if (config.includeTools && config.includeTools.length > 0) {
     return config.includeTools.includes(toolName);
   }
 
-  // 默认包含所有工具
+  // Includes all tools by default
   return true;
 }
 ```
@@ -1720,22 +1720,22 @@ export class McpClient implements McpProgressReporter {
   }
 
   private registerNotificationHandlers(): void {
-    // 监听进度通知
+    //Listen to progress notifications
     this.client?.setNotificationHandler(
       ProgressNotificationSchema,
       (notification) => {
         const { progressToken, progress, total } = notification.params;
 
-        // 查找对应的工具调用
+        // Find the corresponding tool call
         const callId = this.progressTokenToCallId.get(progressToken);
         if (callId) {
-          // 路由进度更新到工具调用
+          //Route progress updated to tool call
           this.routeProgressToCall(callId, { progress, total });
         }
       },
     );
 
-    // 监听工具列表变化
+    // Listen for changes in the tool list
     this.client?.setNotificationHandler(
       ToolListChangedNotificationSchema,
       async () => {
@@ -1743,7 +1743,7 @@ export class McpClient implements McpProgressReporter {
       },
     );
 
-    // 监听资源列表变化
+    // Monitor resource list changes
     this.client?.setNotificationHandler(
       ResourceListChangedNotificationSchema,
       async () => {
@@ -1751,7 +1751,7 @@ export class McpClient implements McpProgressReporter {
       },
     );
 
-    // 监听提示词列表变化
+    // Monitor changes in the prompt word list
     this.client?.setNotificationHandler(
       PromptListChangedNotificationSchema,
       async () => {
@@ -1781,18 +1781,18 @@ export class McpClientManager {
     error?: unknown,
     serverName?: string,
   ) {
-    // 记录错误
+    // Log errors
     if (severity === 'error' || severity === 'warning') {
       if (serverName) {
         this.lastErrors.set(serverName, message);
       }
     }
 
-    // 去重键
+    //Remove duplicate keys
     const diagnosticKey = `${severity}:${message}`;
     const previousStatus = this.shownDiagnostics.get(diagnosticKey);
 
-    // 如果用户已交互，显示详细消息
+    // If the user has interacted, display detailed messages
     if (this.userInteractedWithMcp) {
       if (previousStatus === 'verbose') {
         debugLogger.debug(`Deduplicated verbose MCP diagnostic: ${diagnosticKey}`);
@@ -1803,7 +1803,7 @@ export class McpClientManager {
       return;
     }
 
-    // 静默模式，减少打扰
+    // Silent mode to reduce interruptions
     if (previousStatus) {
       debugLogger.debug(`Deduplicated silent MCP diagnostic: ${diagnosticKey}`);
       return;
@@ -1811,7 +1811,7 @@ export class McpClientManager {
     this.shownDiagnostics.set(diagnosticKey, 'silent');
     debugLogger.log(`[MCP ${severity}] ${message}`, error);
 
-    // 显示提示
+    // show prompt
     if (severity === 'error' || severity === 'warning') {
       if (!this.hintShown) {
         this.hintShown = true;
@@ -1858,7 +1858,7 @@ export class ResourceRegistry {
   }
 
   findResource(uri: string): MCPResource | undefined {
-    // 解析 server://resource/path 格式
+    // Parse server://resource/path format
     const match = uri.match(/^([^:]+):\/\/(.+)$/);
     if (!match) {
       return undefined;
@@ -1886,11 +1886,11 @@ export class ResourceRegistry {
 **Usage Example**:
 
 ```
-# 在对话中引用资源
-> 请分析 @google-drive://documents/my-report.docx
+# Reference resources in conversations
+> Please analyze @google-drive://documents/my-report.docx
 
-# 自动补全会显示可用的资源
-> 请分析 @<Tab>
+# Autocompletion will show available resources
+> Please analyze @<Tab>
 @context7://web/page-1
 @google-drive://documents/report.docx
 @notion://pages/my-page
@@ -1910,7 +1910,7 @@ export class ResourceRegistry {
     "trusted-local-server": {
       "command": "python",
       "args": ["server.py"],
-      "trust": true  // 绕过所有确认
+      "trust": true // bypass all confirmations
     }
   }
 }
@@ -1919,7 +1919,7 @@ export class ResourceRegistry {
 
 ```typescript
 if (this.cliConfig?.isTrustedFolder() && this.trust) {
-  return false; // 在信任的文件夹中，信任的服务器无需确认
+  return false; // In the trusted folder, the trusted server does not require confirmation
 }
 ```
 ### 6.2 Tool call confirmation
@@ -1928,15 +1928,15 @@ if (this.cliConfig?.isTrustedFolder() && this.trust) {
 
 ```typescript
 export enum ToolConfirmationOutcome {
-  /** 执行一次 */
+  /** Execute once */
   ProceedOnce = 'proceed_once',
-  /** 总是允许此工具（会话级） */
+  /** Always allow this tool (session level) */
   ProceedAlwaysTool = 'proceed_always_tool',
-  /** 总是允许此服务器（会话级） */
+  /** Always allow this server (session level) */
   ProceedAlwaysServer = 'proceed_always_server',
-  /** 总是允许并保存到策略（持久化） */
+  /** Always allow and save to policy (persistence) */
   ProceedAlwaysAndSave = 'proceed_always_and_save',
-  /** 取消 */
+  /** Cancel */
   Cancel = 'cancel',
 }
 ```
@@ -1944,21 +1944,21 @@ export enum ToolConfirmationOutcome {
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│ 即将执行 MCP 工具调用                                     │
+│ MCP tool call is about to be executed │
 ├──────────────────────────────────────────────────────────┤
-│ 服务器: context7                                          │
-│ 工具: search                                              │
+│ Server: context7 │
+│ Tools: search │
 │                                                           │
-│ 描述:                                                      │
+│ Description: │
 │ Search the web using Context7 API                        │
 │                                                           │
-│ 参数:                                                      │
+│ Parameters: │
 │ {                                                         │
 │   "query": "Python MCP tutorial",                         │
 │   "limit": 10                                             │
 │ }                                                         │
 │                                                           │
-│ [执行一次] [总是允许此工具] [总是允许此服务器] [取消]      │
+│ [Do it once] [Always allow this tool] [Always allow this server] [Cancel] │
 └──────────────────────────────────────────────────────────┘
 ```
 ### 6.3 Policy Engine
@@ -1966,17 +1966,17 @@ export enum ToolConfirmationOutcome {
 **Policy file** (`~/.gemini/policy.toml`):
 
 ```toml
-# 总是允许 context7 服务器的所有工具
+#Always allow all tools of the context7 server
 [[mcp_rules]]
 name = "context7_*"
 action = "auto_approve"
 
-# 拒绝危险工具
+# Deny dangerous tools
 [[mcp_rules]]
 name = "mcp_*_delete_*"
 action = "auto_deny"
 
-# 要求确认
+# Ask for confirmation
 [[mcp_rules]]
 name = "mcp_github_*"
 action = "manual_confirm"
@@ -2012,42 +2012,42 @@ const ENV_SANITIZATION_CONFIG: EnvironmentSanitizationConfig = {
 ### 7.1 Add Context7 search tool
 
 ```bash
-# 1. 添加 Context7 SSE 服务器
+# 1. Add Context7 SSE server
 gemini mcp add --transport sse context7 https://mcp.context7.com/sse \
   --header "CONTEXT7_API_KEY: your-api-key"
 
-# 2. 列出所有服务器
+# 2. List all servers
 gemini mcp list
 
-# 3. 启动 gemini
+# 3. Start gemini
 gemini
 
-# 4. 使用 Context7 搜索
-> 使用 context7 搜索 Python MCP 教程
+# 4. Search using Context7
+> Search Python MCP tutorials using context7
 
-# AI 会调用 mcp_context7_search 工具，并请求你的批准
-# 批准后，AI 会显示搜索结果
+# AI will call the mcp_context7_search tool and ask for your approval
+# After approval, AI will display the search results
 ```
 ### 7.2 Add Google Workspace integration
 
 ```bash
-# 1. 添加 Google Workspace MCP 服务器
+# 1. Add Google Workspace MCP server
 gemini mcp add google-workspace \
   https://workspace-mcp.googleapis.com/sse
 
-# 2. 首次连接会触发 OAuth
-# 浏览器会打开，登录并授权
+# 2. The first connection will trigger OAuth
+# The browser will open, log in and authorize
 
-# 3. 使用 Google 工具
+# 3. Use Google Tools
 gemini
 
-> 列出我的 Google Drive 文档
-> 创建一个新的 Google Doc：MCP 集成指南
+> List my Google Drive documents
+> Create a new Google Doc: MCP Integration Guide
 ```
 ### 7.3 Add local Python MCP server
 
 ```bash
-# 1. 添加 stdio 服务器
+# 1. Add stdio server
 gemini mcp add python-tools python -m my_mcp_server \
   --cwd ./mcp-servers/python \
   -e API_KEY="$MY_API_TOKEN" \
@@ -2055,28 +2055,28 @@ gemini mcp add python-tools python -m my_mcp_server \
   --include-tools safe_tool,file_reader \
   --exclude-tools dangerous_tool
 
-# 2. 测试连接
+# 2. Test connection
 gemini mcp list
 
-# 3. 使用 Python 工具
+# 3. Use Python tools
 gemini
 
-> 使用 safe_tool 处理数据
-> 读取 file_reader 可以访问的文件
+> Use safe_tool to process data
+> Read files accessible by file_reader
 ```
 ### 7.4 Using MCP Prompt Words
 
 ```bash
-# MCP 服务器可以暴露提示词作为斜杠命令
+# MCP servers can expose prompt words as slash commands
 gemini
 
-# 列出可用的提示词
+# List available prompt words
 /mcp
 
-# 使用提示词
+# Use prompt words
 /poem-writer --title="Gemini CLI" --mood="reverent"
 
-# 或使用位置参数
+# Or use positional parameters
 /poem-writer "Gemini CLI" reverent
 ```
 ### 7.5 Reference MCP resources
@@ -2084,14 +2084,14 @@ gemini
 ```bash
 gemini
 
-# 引用 Google Drive 中的文档
-> 请总结 @google-drive://documents/my-report.docx 的内容
+# Reference documents in Google Drive
+> Please summarize the contents of @google-drive://documents/my-report.docx
 
-# 引用 Notion 页面
-> 分析 @notion://pages/my-project-plan 的任务
+# Reference Notion page
+> Analyze the tasks of @notion://pages/my-project-plan
 
-# 引用 Context7 抓取的网页
-> 比较 @context7://web/page-1 和 @context7://web/page-2
+# Reference the web page captured by Context7
+> Compare @context7://web/page-1 and @context7://web/page-2
 ```
 
 ---
@@ -2271,18 +2271,18 @@ This section shows in detail the complete code link of how LLM calls the MCP too
 
 ```typescript
 async execute(signal: AbortSignal): Promise<ToolResult> {
-    // 1. 标记用户与 MCP 交互（用于诊断显示）
+    // 1. Mark user interaction with MCP (for diagnostic display)
     this.cliConfig?.setUserInteractedWithMcp?.();
 
-    // 2. 构建 FunctionCall（MCP 工具调用格式）
+    // 2. Build FunctionCall (MCP tool call format)
     const functionCalls: FunctionCall[] = [
       {
-        name: this.serverToolName,  // 原始 MCP 工具名（不带 mcp_ 前缀）
-        args: this.params,          // 已解析的参数
+        name: this.serverToolName, //Original MCP tool name (without mcp_ prefix)
+        args: this.params, // Parsed parameters
       },
     ];
 
-    // 3. 与 AbortSignal 竞速，支持取消操作
+    // 3. Racing with AbortSignal to support cancellation operations
     const rawResponseParts = await new Promise<Part[]>((resolve, reject) => {
       if (signal.aborted) {
         const error = new Error('Tool call aborted');
@@ -2304,7 +2304,7 @@ async execute(signal: AbortSignal): Promise<ToolResult> {
 
       signal.addEventListener('abort', onAbort, { once: true });
 
-      // 4. 调用底层 MCP 工具
+      // 4. Call the underlying MCP tool
       this.mcpTool
         .callTool(functionCalls)
         .then((res) => {
@@ -2317,7 +2317,7 @@ async execute(signal: AbortSignal): Promise<ToolResult> {
         });
     });
 
-    // 5. 检查 MCP 工具错误
+    // 5. Check MCP tool errors
     if (this.isMCPToolError(rawResponseParts)) {
       const errorMessage = `MCP tool '${
         this.serverToolName
@@ -2335,7 +2335,7 @@ async execute(signal: AbortSignal): Promise<ToolResult> {
       };
     }
 
-    // 6. 转换 MCP 响应为 LLM 格式
+    // 6. Convert MCP response to LLM format
     const transformedParts = transformMcpContentToParts(rawResponseParts);
 
     return {
@@ -2361,41 +2361,41 @@ protected override async getConfirmationDetails(
   const serverAllowListKey = this.serverName;
   const toolAllowListKey = `${this.serverName}.${this.serverToolName}`;
 
-  // 1. 检查信任文件夹
+  // 1. Check the trust folder
   if (this.cliConfig?.isTrustedFolder() && this.trust) {
-    return false; // 服务器已信任，无需确认
+    return false; // The server has been trusted, no confirmation is required
   }
 
-  // 2. 检查白名单
+  // 2. Check the whitelist
   if (
     DiscoveredMCPToolInvocation.allowlist.has(serverAllowListKey) ||
     DiscoveredMCPToolInvocation.allowlist.has(toolAllowListKey)
   ) {
-    return false; // 已在白名单中，无需确认
+    return false; // Already in the whitelist, no confirmation required
   }
 
-  // 3. 需要用户确认
+  // 3. User confirmation is required
   const confirmationDetails: ToolMcpConfirmationDetails = {
     type: 'mcp',
     title: 'Confirm MCP Tool Execution',
     serverName: this.serverName,
-    toolName: this.serverToolName,  // 原始工具名
-    toolDisplayName: this.displayName,  // 完全限定名（mcp_server_tool）
+    toolName: this.serverToolName, // Original tool name
+    toolDisplayName: this.displayName, // Fully qualified name (mcp_server_tool)
     toolArgs: this.params,
     toolDescription: this.toolDescription,
     toolParameterSchema: this.toolParameterSchema,
     onConfirm: async (outcome: ToolConfirmationOutcome) => {
-      // 4. 处理用户选择
+      // 4. Handle user selection
       if (outcome === ToolConfirmationOutcome.ProceedAlwaysServer) {
-        // 允许整个服务器的所有工具
+        // Allow all tools for the entire server
         DiscoveredMCPToolInvocation.allowlist.add(serverAllowListKey);
       } else if (outcome === ToolConfirmationOutcome.ProceedAlwaysTool) {
-        // 仅允许此特定工具
+        // Only allow this specific tool
         DiscoveredMCPToolInvocation.allowlist.add(toolAllowListKey);
       } else if (outcome === ToolConfirmationOutcome.ProceedAlwaysAndSave) {
-        // 永久允许并保存到策略文件
+        // Permanently allow and save to policy file
         DiscoveredMCPToolInvocation.allowlist.add(toolAllowListKey);
-        // 策略更新由调度器中心处理
+        // Policy updates are handled by the scheduler center
       }
     },
   };
@@ -2417,45 +2417,45 @@ protected override async getConfirmationDetails(
 
 ```typescript
 async discover(config: Config): Promise<void> {
-  // 1. 列出 MCP 服务器的所有工具
+  // 1. List all tools of MCP server
   const response = await this.client?.listTools({});
 
   if (!response?.tools) {
     return;
   }
 
-  // 2. 为每个 MCP 工具创建 DiscoveredMCPTool
+  // 2. Create DiscoveredMCPTool for each MCP tool
   const discoveredTools: DiscoveredMCPTool[] = [];
 
   for (const mcpTool of response.tools) {
-    // 3. 生成完全限定工具名（mcp_server_tool）
+    // 3. Generate fully qualified tool name (mcp_server_tool)
     const fullyQualifiedName = generateValidName(
       `${this.serverName}${MCP_QUALIFIED_NAME_SEPARATOR}${mcpTool.name}`
     );
 
-    // 4. 创建工具实例
+    // 4. Create tool instance
     const tool = new DiscoveredMCPTool(
-      this.createCallableTool(mcpTool),  // CallableTool 包装器
-      this.serverName,                   // 服务器名
-      mcpTool.name,                       // 原始工具名
-      mcpTool.description,                // 描述
-      mcpTool.inputSchema,                // JSON Schema 参数
+      this.createCallableTool(mcpTool), // CallableTool wrapper
+      this.serverName, // server name
+      mcpTool.name, // Original tool name
+      mcpTool.description, // description
+      mcpTool.inputSchema, // JSON Schema parameters
       this.messageBus,
-      this.serverConfig?.trust,           // 信任标志
-      mcpTool.name?.startsWith('read_'), // 只读判断
+      this.serverConfig?.trust, // Trust flag
+      mcpTool.name?.startsWith('read_'), // read-only judgment
       undefined,                          // nameOverride
       this.cliConfig,
       this.serverConfig?.extension?.name,
       this.serverConfig?.extension?.id,
       {
-        _serverName: this.serverName,     // 工具注解
+        _serverName: this.serverName, // Tool annotation
       },
     );
 
     discoveredTools.push(tool);
   }
 
-  // 5. 注册到 ToolRegistry
+  // 5. Register to ToolRegistry
   for (const tool of discoveredTools) {
     this.toolRegistry.registerTool(tool);
   }
@@ -2483,18 +2483,18 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<ToolParams, ToolResul
     override readonly _toolAnnotations?: Record<string, unknown>,
   ) {
     super(
-      // 工具名：mcp_server_tool 格式
+      // Tool name: mcp_server_tool format
       nameOverride ??
         generateValidName(
           `${serverName}${MCP_QUALIFIED_NAME_SEPARATOR}${serverToolName}`
         ),
 
-      // 显示名：toolName (serverName MCP Server)
+      // Display name: toolName (serverName MCP Server)
       `${serverToolName} (${serverName} MCP Server)`,
 
       description,
       Kind.Other,
-      parameterSchema,  // 直接传递 MCP 的 JSON Schema
+      parameterSchema, // Directly pass the JSON Schema of MCP
       messageBus,
       true,  // isOutputMarkdown
       false, // canUpdateOutput
@@ -2505,7 +2505,7 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<ToolParams, ToolResul
     this._isReadOnly = isReadOnly;
   }
 
-  // 返回工具的 FunctionDeclaration 格式
+  // Return the FunctionDeclaration format of the tool
   getFunctionDeclaration(): FunctionDeclaration {
     return {
       name: this.name,
@@ -2518,13 +2518,13 @@ export class DiscoveredMCPTool extends BaseDeclarativeTool<ToolParams, ToolResul
 ### 10.3 Complete call sequence diagram
 
 ```
-用户输入 "使用 context7 搜索 Python MCP 教程"
+User input "Search for Python MCP tutorial using context7"
     ↓
-Gemini CLI 调度器
+Gemini CLI scheduler
     ↓
-LLM 生成响应
+LLM generates response
     ↓
-Gemini API 调用
+Gemini API calls
     POST /v1/models/gemini-2.0-flash-exp:generateContent
 {
     "tools": [
@@ -2547,51 +2547,51 @@ Gemini API 调用
     ]
 }
     ↓
-Gemini API 返回响应
-    ├── Content: "好的，我来帮你搜索..."
+Gemini API returns response
+    ├── Content: "Okay, let me search for you..."
     └── FunctionCall: {
             "name": "mcp_context7_search",
-            "args": {"query": "Python MCP 教程", "limit": 10}
+            "args": {"query": "Python MCP Tutorial", "limit": 10}
          }
     ↓
-调度器解析 FunctionCall
+Scheduler parsing FunctionCall
     ↓
-创建 DiscoveredMCPToolInvocation
+Create DiscoveredMCPToolInvocation
     ↓
 getConfirmationDetails()
     ↓
-检查信任/白名单
+Check trust/whitelist
     ↓
-需要确认 → 显示确认对话框
+Confirmation required → Show confirmation dialog
     ↓
-用户点击"允许"
+User clicks "Allow"
     ↓
 execute(abortSignal)
     ↓
 mcpTool.callTool([{
-    name: "search",  // 原始工具名
-    args: {query: "Python MCP 教程", limit: 10}
+    name: "search", // Original tool name
+    args: {query: "Python MCP Tutorial", limit: 10}
 }])
     ↓
-MCP 服务器返回结果
+MCP server returns results
     {
         "content": [
-            {"type": "text", "text": "找到 10 个相关结果..."}
+            {"type": "text", "text": "10 related results found..."}
         ]
     }
     ↓
 transformMcpContentToParts()
     ↓
-转换为 Gemini Part 格式
+Convert to Gemini Part format
     ↓
 ToolResult {
-    llmContent: [{text: "找到 10 个相关结果..."}],
-    returnDisplay: "找到 10 个相关结果..."
+    llmContent: [{text: "10 related results found..."}],
+    returnDisplay: "10 related results found..."
 }
     ↓
-添加到 LLM 上下文
+Add to LLM context
     ↓
-继续下一轮 LLM 调用（包含工具结果）
+Continue to next round of LLM calls (containing tool results)
 ```
 ### 10.4 Key data structure conversion
 
@@ -2613,12 +2613,12 @@ function transformMcpContentToParts(sdkResponse: Part[]): Part[] {
     (block: McpContentBlock): Part | Part[] | null => {
       switch (block.type) {
         case 'text':
-          // 文本内容
+          // text content
           return { text: block.text };
 
         case 'image':
         case 'audio':
-          // 媒体内容：添加描述 + inlineData
+          // Media content: add description + inlineData
           return [
             {
               text: `[Tool '${toolName}' provided the following ${
@@ -2634,7 +2634,7 @@ function transformMcpContentToParts(sdkResponse: Part[]): Part[] {
           ];
 
         case 'resource':
-          // 资源内容
+          // Resource content
           const resource = block.resource;
           if (resource?.text) {
             return { text: resource.text };
@@ -2655,7 +2655,7 @@ function transformMcpContentToParts(sdkResponse: Part[]): Part[] {
           return null;
 
         case 'resource_link':
-          // 资源链接
+          // Resource link
           return {
             text: `Resource Link: ${block.title || block.name} at ${block.uri}`,
           };
@@ -2678,16 +2678,16 @@ function transformMcpContentToParts(sdkResponse: Part[]): Part[] {
 #### Tool name mapping
 
 ```typescript
-// MCP 服务器返回的工具名
+//Tool name returned by MCP server
 const serverToolName = "search";
 
-// Gemini CLI 生成的完全限定名
+// Fully qualified name generated by Gemini CLI
 const fullyQualifiedName = "mcp_context7_search";
 
-// LLM 看到的工具名
+//Tool name seen by LLM
 const toolName = "mcp_context7_search";
 
-// 调用 MCP 服务器时使用原始名
+// Use the original name when calling the MCP server
 const mcpCallName = "search";
 ```
 ### 10.5 Comparison with Kimi CLI
@@ -2723,25 +2723,25 @@ const mcpCallName = "search";
 ```
 packages/core/src/
 ├── tools/
-│   ├── mcp-client.ts           # MCP 客户端核心 (1000+ 行)
-│   ├── mcp-client-manager.ts   # MCP 客户端管理器 (500+ 行)
-│   ├── mcp-tool.ts             # MCP 工具封装 (600+ 行)
-│   └── tool-registry.ts        # 工具注册表
+│ ├── mcp-client.ts # MCP client core (1000+ lines)
+│ ├── mcp-client-manager.ts # MCP client manager (500+ lines)
+│ ├── mcp-tool.ts # MCP tool package (600+ lines)
+│ └── tool-registry.ts # Tool registry
 ├── mcp/
-│   ├── google-auth-provider.ts         # Google 认证
-│   ├── sa-impersonation-provider.ts    # 服务账号模拟
-│   ├── oauth-provider.ts               # OAuth 提供者
-│   └── oauth-token-storage.ts          # Token 存储
+│ ├── google-auth-provider.ts # Google Authentication
+│ ├── sa-impersonation-provider.ts # Service account imitation
+│ ├── oauth-provider.ts # OAuth provider
+│ └── oauth-token-storage.ts # Token storage
 ├── prompts/
-│   └── prompt-registry.ts      # 提示词注册表
+│ └── prompt-registry.ts # Prompt word registry
 └── resources/
-    └── resource-registry.ts    # 资源注册表
+    └── resource-registry.ts # Resource registry
 
 packages/cli/src/commands/mcp/
-├── add.ts                      # 添加服务器 (250+ 行)
-├── remove.ts                   # 移除服务器
-├── list.ts                     # 列出服务器
-└── enableDisable.ts            # 启用/禁用服务器
+├── add.ts # Add server (250+ lines)
+├── remove.ts # Remove server
+├── list.ts # List servers
+└── enableDisable.ts # Enable/disable server
 ```
 ### B. Configuration file example
 

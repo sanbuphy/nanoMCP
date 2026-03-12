@@ -57,44 +57,44 @@ Kimi Code CLI is a terminal AI assistant developed by Moonshot AI. It not only h
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                         用户交互层                               │
+│ User interaction layer │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │  CLI 命令    │  │  ACP 协议    │  │  Web UI      │          │
-│  │  kimi mcp    │  │  IDE 集成    │  │  界面        │          │
+│ │ CLI Commands │ │ ACP Protocol │ │ Web UI │ │
+│ │ kimi mcp │ │ IDE integration │ │ Interface │ │
 │  └──────────────┘  └──────────────┘  └──────────────┘          │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                         配置管理层                               │
+│Configure management layer │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │  ~/.kimi/mcp.json (默认配置)                           │     │
-│  │  --mcp-config-file (自定义配置)                        │     │
-│  │  --mcp-config (内联配置)                               │     │
+│ │ ~/.kimi/mcp.json (default configuration) │ │
+│ │ --mcp-config-file (custom configuration) │ │
+│ │ --mcp-config (inline configuration) │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                         核心处理层                               │
+│ Core processing layer │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
 │  │ KimiToolset  │  │  MCPTool     │  │ MCPServerInfo│          │
-│  │ 工具集管理   │  │  工具封装    │  │ 连接状态     │          │
+│ │ Tool Set Management │ │ Tool Encapsulation │ │ Connection Status │ │
 │  └──────────────┘  └──────────────┘  └──────────────┘          │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                         MCP 客户端层                             │
+│ MCP Client Layer │
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │  fastmcp.Client                                         │     │
-│  │  - stdio 传输 (本地进程)                                │     │
-│  │  - http 传输 (远程服务器)                               │     │
-│  │  - OAuth 认证                                            │     │
+│ │ - stdio transfer (local process) │ │
+│ │ - http transport (remote server) │ │
+│ │ - OAuth Authentication │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                      外部 MCP 服务器层                            │
+│ External MCP Server Layer │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌──────────┐       │
-│  │context7  │  │ Linear   │  │Notion    │  │自定义... │       │
+│ │context7 │ │ Linear │ │Notion │ │Custom... │ │
 │  └──────────┘  └──────────┘  └──────────┘  └──────────┘       │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -103,18 +103,18 @@ Kimi Code CLI is a terminal AI assistant developed by Moonshot AI. It not only h
 ```
 src/kimi_cli/
 ├── cli/
-│   └── mcp.py                    # MCP CLI 命令实现
+│ └── mcp.py # MCP CLI command implementation
 ├── soul/
-│   └── toolset.py                # 工具集核心逻辑
+│ └── toolset.py # Toolset core logic
 ├── acp/
-│   └── mcp.py                    # ACP 协议的 MCP 适配
-├── config.py                     # 配置定义
-└── exception.py                  # 异常定义
+│ └── mcp.py # MCP adaptation of ACP protocol
+├── config.py # Configuration definition
+└── exception.py #Exception definition
 
-主要文件职责：
-- cli/mcp.py: 提供 kimi mcp 命令行工具
-- soul/toolset.py: 工具加载、管理、调用核心逻辑
-- acp/mcp.py: ACP 协议与 MCP 的桥接
+Main document responsibilities:
+- cli/mcp.py: Provides kimi mcp command line tool
+- soul/toolset.py: Tool loading, management, and calling core logic
+- acp/mcp.py: bridging of ACP protocol and MCP
 ```
 
 ---
@@ -155,16 +155,16 @@ MCP configuration is stored in `~/.kimi/mcp.json` and supports two transmission 
 # cli/mcp.py: _load_mcp_config()
 
 def _load_mcp_config() -> dict[str, Any]:
-    """从全局配置文件加载 MCP 配置"""
+    """Load MCP configuration from global configuration file"""
     mcp_file = get_global_mcp_config_file()  # ~/.kimi/mcp.json
 
     if not mcp_file.exists():
         return {"mcpServers": {}}
 
-    # 1. 读取并解析 JSON
+    # 1. Read and parse JSON
     config = json.loads(mcp_file.read_text(encoding="utf-8"))
 
-    # 2. 使用 Pydantic 验证配置格式
+    # 2. Use Pydantic to verify the configuration format
     try:
         MCPConfig.model_validate(config)
     except ValidationError as e:
@@ -175,26 +175,26 @@ def _load_mcp_config() -> dict[str, Any]:
 #### CLI command implementation
 
 ```bash
-# 添加 HTTP 服务器
+#Add HTTP server
 kimi mcp add --transport http context7 https://mcp.context7.com/mcp \
   --header "CONTEXT7_API_KEY: your-key"
 
-# 添加 OAuth 认证的服务器
+#Add OAuth authentication server
 kimi mcp add --transport http --auth oauth linear https://mcp.linear.app/mcp
 
-# 添加 stdio 服务器
+# Add stdio server
 kimi mcp add --transport stdio chrome-devtools -- npx chrome-devtools-mcp@latest
 
-# 列出所有服务器
+# List all servers
 kimi mcp list
 
-# 测试连接
+# Test connection
 kimi mcp test context7
 
-# OAuth 授权
+#OAuth authorization
 kimi mcp auth linear
 
-# 移除服务器
+# Remove server
 kimi mcp remove context7
 ```
 **Code implementation** (`cli/mcp.py:83-193`):
@@ -209,11 +209,11 @@ def mcp_add(
     header: list[str] | None = None,
     auth: str | None = None,
 ):
-    """添加 MCP 服务器"""
+    """Add MCP server"""
     config = _load_mcp_config()
 
     if transport == "stdio":
-        # stdio 模式：命令行工具
+        # stdio mode: command line tool
         command, *command_args = server_args
         server_config = {
             "command": command,
@@ -221,7 +221,7 @@ def mcp_add(
             "env": _parse_key_value_pairs(env, "env")
         }
     else:
-        # http 模式：远程服务器
+        # http mode: remote server
         server_config = {
             "url": server_args[0],
             "transport": "http",
@@ -245,25 +245,25 @@ def mcp_add(
 ```python
 class KimiToolset:
     def __init__(self) -> None:
-        self._tool_dict: dict[str, ToolType] = {}      # 所有工具字典
-        self._mcp_servers: dict[str, MCPServerInfo] = {}  # MCP 服务器
+        self._tool_dict: dict[str, ToolType] = {} # All tool dictionaries
+        self._mcp_servers: dict[str, MCPServerInfo] = {} # MCP server
         self._mcp_loading_task: asyncio.Task[None] | None = None
 
     def add(self, tool: ToolType) -> None:
-        """添加工具到工具集"""
+        """Add tools to toolset"""
         self._tool_dict[tool.name] = tool
 
     def find(self, tool_name: str) -> ToolType | None:
-        """查找工具"""
+        """Find tool"""
         return self._tool_dict.get(tool_name)
 
     def handle(self, tool_call: ToolCall) -> HandleResult:
-        """处理工具调用"""
+        """Handling tool calls"""
         tool = self._tool_dict.get(tool_call.function.name)
         if not tool:
             return ToolResult(return_value=ToolNotFoundError(tool_name))
 
-        # 异步调用工具
+        # Asynchronous calling tool
         async def _call():
             ret = await tool.call(arguments)
             return ToolResult(tool_call_id=tool_call.id, return_value=ret)
@@ -275,21 +275,21 @@ class KimiToolset:
 ```python
 @dataclass
 class MCPServerInfo:
-    """MCP 服务器连接信息"""
+    """MCP server connection information"""
     status: Literal["pending", "connecting", "connected", "failed", "unauthorized"]
-    client: fastmcp.Client[Any]  # fastmcp 客户端
-    tools: list[MCPTool[Any]]    # 该服务器提供的工具列表
+    client: fastmcp.Client[Any] # fastmcp client
+    tools: list[MCPTool[Any]] # List of tools provided by this server
 ```
 **State Machine**:
 
 ```
-pending (初始状态)
+pending (initial state)
    ↓
-connecting (开始连接)
+connecting (start connecting)
    ↓
-   ├─→ connected (连接成功，工具已加载)
-   ├─→ failed (连接失败)
-   └─→ unauthorized (OAuth 未授权)
+   ├─→ connected (connection successful, tool loaded)
+   ├─→ failed (connection failed)
+   └─→ unauthorized (OAuth unauthorized)
 ```
 
 ---
@@ -304,14 +304,14 @@ connecting (开始连接)
 class MCPTool[T: ClientTransport](CallableTool):
     def __init__(
         self,
-        server_name: str,      # 服务器名称
-        mcp_tool: mcp.Tool,    # MCP 原始工具
-        client: fastmcp.Client[T],  # fastmcp 客户端
+        server_name: str, # Server name
+        mcp_tool: mcp.Tool, # MCP original tool
+        client: fastmcp.Client[T], # fastmcp client
         *,
-        runtime: Runtime,      # 运行时上下文
+        runtime: Runtime, # runtime context
         **kwargs: Any,
     ):
-        # 调用父类初始化
+        # Call parent class initialization
         super().__init__(
             name=mcp_tool.name,
             description=(
@@ -333,14 +333,14 @@ class MCPTool[T: ClientTransport](CallableTool):
 
 ```python
 async def __call__(self, **kwargs) -> ToolReturnValue:
-    # 1. 用户审批
+    # 1. User approval
     description = f"Call MCP tool `{self._mcp_tool.name}`."
     if not await self._runtime.approval.request(
         self.name, self._action_name, description
     ):
         return ToolRejectedError()
 
-    # 2. 调用 MCP 服务器
+    # 2. Call MCP server
     try:
         async with self._client as client:
             result = await client.call_tool(
@@ -351,7 +351,7 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
             )
             return convert_mcp_tool_result(result)
     except Exception as e:
-        # 3. 错误处理
+        # 3. Error handling
         if "timeout" in str(e).lower():
             return ToolError(
                 message=f"Timeout while calling MCP tool `{self._mcp_tool.name}`",
@@ -366,17 +366,17 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 
 ```python
 class MCPClientConfig(BaseModel):
-    """MCP 客户端配置"""
-    tool_call_timeout_ms: int = 60000  # 工具调用超时（毫秒）
+    """MCP Client Configuration"""
+    tool_call_timeout_ms: int = 60000 # Tool call timeout (milliseconds)
 
 class MCPConfig(BaseModel):
-    """MCP 配置"""
+    """MCP Configuration"""
     client: MCPClientConfig = Field(
         default_factory=MCPClientConfig
     )
 
 class Config(BaseModel):
-    """主配置"""
+    """Main configuration"""
     mcp: MCPConfig = Field(
         default_factory=MCPConfig,
         description="MCP configuration"
@@ -391,81 +391,81 @@ class Config(BaseModel):
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                      1. 用户启动 kimi                            │
+│ 1. User starts kimi │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│               2. 加载配置 (app.py: KimiCLI.create)              │
+│ 2. Load configuration (app.py: KimiCLI.create) │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 加载源：                                               │     │
-│  │  • ~/.kimi/mcp.json (默认)                            │     │
-│  │  • --mcp-config-file <path> (指定文件)                 │     │
-│  │  • --mcp-config <json> (内联配置)                     │     │
+│ │ Loading source: │ │
+│ │ • ~/.kimi/mcp.json (default) │ │
+│ │ • --mcp-config-file <path> (specify file) │ │
+│ │ • --mcp-config <json> (inline configuration) │ │
 │  └────────────────────────────────────────────────────────┘     │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 验证配置：                                             │     │
+│ │ Verify configuration: │ │
 │  │  MCPConfig.model_validate(config)                      │     │
-│  │  解析服务器配置（stdio/http）                          │     │
+│ │ Parse server configuration (stdio/http) │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│           3. 创建 Runtime 和 KimiToolset                         │
+│ 3. Create Runtime and KimiToolset │
 │  runtime = await Runtime.create(config, ...)                    │
 │  toolset = runtime.toolset                                      │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│        4. 加载 MCP 工具 (toolset.load_mcp_tools)                │
+│ 4. Load MCP tools (toolset.load_mcp_tools) │
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │ for each mcp_config:                                  │     │
 │  │   for server_name, server_config in mcpServers:        │     │
-│  │     1. 创建 MCPServerInfo (status: pending)            │     │
-│  │     2. 创建 fastmcp.Client                             │     │
-│  │     3. 检查 OAuth 授权状态                             │     │
+│ │ 1. Create MCPServerInfo (status: pending) │ │
+│ │ 2. Create fastmcp.Client │ │
+│ │ 3. Check OAuth authorization status │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              5. 异步连接所有服务器                                │
+│ 5. Connect to all servers asynchronously │
 │  ┌────────────────────────────────────────────────────────┐     │
 │  │ asyncio.gather(*tasks)                                │     │
 │  │   for each server:                                    │     │
 │  │     status: pending → connecting                      │     │
-│  │     ├─ 未授权 → unauthorized                          │     │
-│  │     └─ 已授权 → 连接并获取工具列表                    │     │
-│  │         ├─ 成功 → 创建 MCPTool → 添加到 toolset       │     │
+│ │ ├─ Unauthorized → unauthorized │ │
+│ │ └─ Authorized → Connect and get the tool list │ │
+│ │ ├─ Success → Create MCPTool → Add to toolset │ │
 │  │         │         → status: connected                 │     │
-│  │         └─ 失败 → status: failed                      │     │
+│ │ └─ failed → status: failed │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                   6. 显示连接结果                                │
-│  • "mcp servers connected" (成功)                               │
-│  • "mcp authorization needed" (需要授权)                        │
-│  • "mcp connection failed" (连接失败)                           │
+│ 6. Display connection results │
+│ • "mcp servers connected" (success) │
+│ • "mcp authorization needed" │
+│ • "mcp connection failed" │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                   7. 等待用户输入                                │
+│ 7. Wait for user input │
 └─────────────────────────────────────────────────────────────────┘
 ```
 ### 4.2 Tool calling flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    用户输入问题                                  │
-│  "使用 context7 搜索 Python MCP 教程"                           │
+│ User input issues │
+│ "Search Python MCP tutorial using context7" │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                  AI 分析并决定调用工具                           │
-│  识别需要使用 context7_search 工具                              │
+│AI analyzes and decides to call tools │
+│Identification requires the use of context7_search tool │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│                    生成 ToolCall                                 │
+│ Generate ToolCall │
 │  {                                                              │
 │    "id": "call_abc123",                                         │
 │    "function": {                                                │
@@ -481,13 +481,13 @@ class Config(BaseModel):
 ┌─────────────────────────────────────────────────────────────────┐
 │            toolset.handle(tool_call)                            │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 查找工具：                                          │     │
+│ │ 1. Search tool: │ │
 │  │    tool = toolset._tool_dict["context7_search"]        │     │
 │  │                                                        │     │
-│  │ 2. 解析参数：                                          │     │
+│ │ 2. Analysis parameters: │ │
 │  │    kwargs = json.loads(arguments)                     │     │
 │  │                                                        │     │
-│  │ 3. 异步调用：                                          │     │
+│ │ 3. Asynchronous call: │ │
 │  │    result = await tool.call(kwargs)                   │     │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
@@ -495,7 +495,7 @@ class Config(BaseModel):
 ┌─────────────────────────────────────────────────────────────────┐
 │              MCPTool.__call__(**kwargs)                         │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 用户审批：                                          │     │
+│ │ 1. User approval: │ │
 │  │    await runtime.approval.request(                     │     │
 │  │      "context7_search",                                │     │
 │  │      "mcp:context7_search",                            │     │
@@ -503,16 +503,16 @@ class Config(BaseModel):
 │  │    )                                                    │     │
 │  │                                                        │     │
 │  │  ┌────────────────────────────────────────────┐        │     │
-│  │  │ 弹出确认对话框：                         │        │     │
+│ │ │ A confirmation dialog box pops up: │ │ │
 │  │  │ ┌──────────────────────────────────┐     │        │     │
-│  │  │  │ 即将执行 MCP 工具调用           │     │        │     │
-│  │  │  │ 工具: context7_search           │     │        │     │
-│  │  │  │ 描述: Search the web...         │     │        │     │
-│  │  │  │ [允许] [拒绝]                   │     │        │     │
+│ │ │ │ MCP tool call is about to be executed │ │ │ │
+│ │ │ │ Tools: context7_search │ │ │ │
+│ │ │ │ Description: Search the web... │ │ │ │
+│ │ │ │ [Allow] [Deny] │ │ │ │
 │  │  │  └──────────────────────────────────┘     │        │     │
 │  │  └────────────────────────────────────────────┘        │     │
 │  │                                                        │     │
-│  │ 2. 调用 MCP 服务器：                                   │     │
+│ │ 2. Call the MCP server: │ │
 │  │    async with client as client:                       │     │
 │  │      result = await client.call_tool(                 │     │
 │  │        "context7_search",                             │     │
@@ -520,7 +520,7 @@ class Config(BaseModel):
 │  │        timeout=60s                                    │     │
 │  │      )                                                 │     │
 │  │                                                        │     │
-│  │ 3. 转换结果：                                          │     │
+│ │ 3. Conversion result: │ │
 │  │    return convert_mcp_tool_result(result)             │     │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
@@ -544,20 +544,20 @@ class Config(BaseModel):
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              AI 处理结果并返回给用户                              │
+│ AI processes the results and returns them to the user │
 └─────────────────────────────────────────────────────────────────┘
 ```
 ### 4.3 OAuth authorization flow chart
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│              1. 添加 OAuth 服务器                                │
+│ 1. Add OAuth server │
 │  kimi mcp add --transport http --auth oauth linear \           │
 │    https://mcp.linear.app/mcp                                  │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              2. 配置保存到 ~/.kimi/mcp.json                      │
+│ 2. Save the configuration to ~/.kimi/mcp.json │
 │  {                                                              │
 │    "mcpServers": {                                              │
 │      "linear": {                                                │
@@ -570,26 +570,26 @@ class Config(BaseModel):
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              3. 执行授权                                        │
+│ 3. Execute authorization │
 │  kimi mcp auth linear                                           │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              4. 打开浏览器授权                                   │
+│ 4. Open browser authorization │
 │  ┌────────────────────────────────────────────────────────┐     │
-│  │ 1. 创建 fastmcp.Client                                 │     │
+│ │ 1. Create fastmcp.Client │ │
 │  │ 2. async with client as client:                       │     │
 │  │ 3. await client.list_tools()                          │     │
-│  │    → 触发 OAuth 流程                                   │     │
-│  │    → 打开浏览器                                        │     │
-│  │    → 用户登录并授权                                    │     │
-│  │    → Token 保存到文件系统                              │     │
+│ │ → Trigger OAuth process │ │
+│ │ → Open browser │ │
+│ │ → User login and authorization │ │
+│ │ → Token is saved to the file system │ │
 │  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
-│              5. 授权成功                                        │
-│  ✓ Token 已保存，后续使用无需重新授权                            │
+│ 5. Authorization successful │
+│ ✓ Token has been saved, subsequent use does not require re-authorization │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -607,17 +607,17 @@ class Config(BaseModel):
 # soul/toolset.py: load_mcp_tools()
 
 async def load_mcp_tools(self, mcp_configs, runtime, in_background=True):
-    # 1. 为每个服务器创建连接任务
+    # 1. Create a connection task for each server
     tasks = [
         asyncio.create_task(_connect_server(server_name, server_info))
         for server_name, server_info in self._mcp_servers.items()
         if server_info.status == "pending"
     ]
 
-    # 2. 并发执行所有连接
+    # 2. Execute all connections concurrently
     results = await asyncio.gather(*tasks) if tasks else []
 
-    # 3. 收集失败的服务器
+    # 3. Collect failed servers
     failed_servers = {name: error for name, error in results if error is not None}
 
     if failed_servers:
@@ -641,17 +641,17 @@ async def load_mcp_tools(self, mcp_configs, runtime, in_background=True):
 
 async def load_mcp_tools(self, mcp_configs, runtime, in_background=True):
     async def _connect():
-        # 连接所有服务器
+        # Connect to all servers
         ...
 
     if in_background:
-        # 后台加载，不阻塞启动
+        # Background loading, no blocking startup
         self._mcp_loading_task = asyncio.create_task(_connect())
     else:
-        # 同步等待加载完成
+        # Synchronously wait for loading to complete
         await _connect()
 
-# 在需要使用 MCP 工具时等待加载完成
+# Wait for loading to complete when you need to use the MCP tool
 async def wait_for_mcp_tools(self) -> None:
     task = self._mcp_loading_task
     if task:
@@ -674,14 +674,14 @@ async def wait_for_mcp_tools(self) -> None:
 # soul/toolset.py: convert_mcp_tool_result()
 
 def convert_mcp_tool_result(result: CallToolResult) -> ToolReturnValue:
-    """将 MCP 工具结果转换为 Kimi 工具返回值"""
+    """Convert MCP tool results to Kimi tool return values"""
     content: list[ContentPart] = []
 
-    # 遍历 MCP 返回的内容
+    # Traverse the content returned by MCP
     for part in result.content:
         content.append(convert_mcp_content(part))
 
-    # 根据是否错误返回不同类型
+    # Return different types depending on whether there is an error or not
     if result.is_error:
         return ToolError(
             output=content,
@@ -695,7 +695,7 @@ def convert_mcp_tool_result(result: CallToolResult) -> ToolReturnValue:
 # kosong/tooling/mcp.py: convert_mcp_content()
 
 def convert_mcp_content(content) -> ContentPart:
-    """转换单个 MCP 内容"""
+    """Convert single MCP content"""
     if isinstance(content, mcp.TextContent):
         return ContentPart(text=content.text)
     elif isinstance(content, mcp.ImageContent):
@@ -718,7 +718,7 @@ def convert_mcp_content(content) -> ContentPart:
 # soul/toolset.py: MCPTool.__call__()
 
 async def __call__(self, **kwargs) -> ToolReturnValue:
-    # 从配置读取超时时间（默认 60 秒）
+    # Read timeout from configuration (default 60 seconds)
     self._timeout = timedelta(
         milliseconds=runtime.config.mcp.client.tool_call_timeout_ms
     )
@@ -728,12 +728,12 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
             result = await client.call_tool(
                 self._mcp_tool.name,
                 kwargs,
-                timeout=self._timeout,  # 设置超时
+                timeout=self._timeout, # Set timeout
                 raise_on_error=False
             )
             return convert_mcp_tool_result(result)
     except Exception as e:
-        # 捕获超时异常
+        #Catch timeout exception
         exc_msg = str(e).lower()
         if "timeout" in exc_msg or "timed out" in exc_msg:
             return ToolError(
@@ -750,7 +750,7 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 ```yaml
 mcp:
   client:
-    tool_call_timeout_ms: 60000  # 60 秒
+    tool_call_timeout_ms: 60000 # 60 seconds
 ```
 
 ---
@@ -767,7 +767,7 @@ mcp:
 async def _connect_server(
     server_name: str, server_info: MCPServerInfo
 ) -> tuple[str, Exception | None]:
-    """连接单个服务器，不影响其他服务器"""
+    """Connect to a single server without affecting other servers"""
     if server_info.status != "pending":
         return server_name, None
 
@@ -775,13 +775,13 @@ async def _connect_server(
 
     try:
         async with server_info.client as client:
-            # 获取工具列表
+            # Get the tool list
             for tool in await client.list_tools():
                 server_info.tools.append(
                     MCPTool(server_name, tool, client, runtime=runtime)
                 )
 
-            # 添加到工具集
+            # Add to toolset
             for tool in server_info.tools:
                 self.add(tool)
 
@@ -790,7 +790,7 @@ async def _connect_server(
             return server_name, None
 
     except Exception as e:
-        # 记录错误，但不抛出异常
+        # Log errors but do not throw exceptions
         logger.error(f"Failed to connect MCP server: {server_name}, error: {e}")
         server_info.status = "failed"
         return server_name, e
@@ -810,36 +810,36 @@ async def _connect_server(
 async def __call__(self, **kwargs) -> ToolReturnValue:
     description = f"Call MCP tool `{self._mcp_tool.name}`."
 
-    # 请求用户批准
+    # Request user approval
     if not await self._runtime.approval.request(
-        self.name,              # 工具名称
-        self._action_name,      # 动作名称 (mcp:xxx)
-        description             # 描述
+        self.name, # Tool name
+        self._action_name, # Action name (mcp:xxx)
+        description # description
     ):
         return ToolRejectedError()
 
-    # 用户批准后才执行
+    # Execute only after user approval
     ...
 ```
 **Approval Interface**:
 
 ```
 ┌─────────────────────────────────────────┐
-│ 即将执行 MCP 工具调用                   │
+│ MCP tool call is about to be executed │
 ├─────────────────────────────────────────┤
-│ 工具: context7_search                   │
-│ 类型: MCP 工具                          │
+│ Tool: context7_search │
+│ Type: MCP Tool │
 │                                         │
-│ 描述:                                   │
+│ Description: │
 │ Search the web using Context7 API...    │
 │                                         │
-│ 参数:                                   │
+│ Parameters: │
 │ {                                       │
 │   "query": "Python MCP tutorial",       │
 │   "limit": 10                           │
 │ }                                       │
 │                                         │
-│ [允许] [拒绝] [总是允许]                │
+│ [Allow] [Deny] [Always Allow] │
 └─────────────────────────────────────────┘
 ```
 ### 6.2 YOLO mode
@@ -847,27 +847,27 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 **Note**: Even in YOLO mode, MCP tools require approval
 
 ```python
-# YOLO 模式只影响内置工具，不影响 MCP 工具
-# 文档明确说明：
+# YOLO mode only affects built-in tools and does not affect MCP tools
+# The documentation clearly states:
 # "In YOLO mode, MCP tool operations will also be auto-approved.
 #  It is recommended to use YOLO mode only when you fully trust the MCP server."
 ```
 ### 6.3 OAuth Token secure storage
 
 ```python
-# fastmcp 使用 keyring 安全存储 OAuth token
+# fastmcp uses keyring to securely store OAuth tokens
 from fastmcp.client.auth.oauth import FileTokenStorage
 
 storage = FileTokenStorage(server_url=server_url)
-tokens = await storage.get_tokens()  # 从安全存储读取
+tokens = await storage.get_tokens() # Read from secure storage
 ```
 ### 6.4 Prompt word injection protection
 
 Content returned by MCP tools is tagged to help the AI ​​differentiate between tool output and user instructions:
 
 ```python
-# 工具返回内容会被标记为 "tool output"
-# AI 可以识别这不是用户指令
+# The tool return content will be marked as "tool output"
+# AI can recognize that this is not a user command
 ```
 **Documentation Warning**:
 
@@ -886,66 +886,66 @@ Content returned by MCP tools is tagged to help the AI ​​differentiate betwe
 ### 7.1 Add Context7 search tool
 
 ```bash
-# 1. 添加 Context7 HTTP 服务器
+# 1. Add Context7 HTTP server
 kimi mcp add --transport http context7 https://mcp.context7.com/mcp \
   --header "CONTEXT7_API_KEY: your-api-key"
 
-# 2. 测试连接
+# 2. Test connection
 kimi mcp test context7
 
-# 3. 列出所有服务器
+# 3. List all servers
 kimi mcp list
 
-# 4. 启动 kimi
+# 4. Start kimi
 kimi
 
-# 5. 使用 Context7 搜索
-> 使用 context7 搜索 Python MCP 教程
+# 5. Search using Context7
+> Search Python MCP tutorials using context7
 
-# AI 会调用 context7_search 工具，并请求你的批准
-# 批准后，AI 会显示搜索结果
+# AI will call the context7_search tool and ask for your approval
+# After approval, AI will display the search results
 ```
 ### 7.2 Add Linear integration
 
 ```bash
-# 1. 添加 Linear OAuth 服务器
+# 1. Add Linear OAuth server
 kimi mcp add --transport http --auth oauth linear https://mcp.linear.app/mcp
 
-# 2. 执行 OAuth 授权
+# 2. Perform OAuth authorization
 kimi mcp auth linear
-# 浏览器会打开，登录并授权
+# The browser will open, log in and authorize
 
-# 3. 测试连接
+# 3. Test connection
 kimi mcp test linear
 
-# 4. 使用 Linear 工具
+# 4. Use Linear tool
 kimi
 
-> 列出我的 Linear issues
-> 创建一个新的 Linear issue：修复 MCP 连接超时问题
+> List my Linear issues
+> Create a new Linear issue: fix MCP connection timeout issue
 ```
 ### 7.3 Add local Chrome DevTools
 
 ```bash
-# 1. 添加 stdio 服务器
+# 1. Add stdio server
 kimi mcp add --transport stdio chrome-devtools -- npx chrome-devtools-mcp@latest
 
-# 2. 测试连接
+# 2. Test connection
 kimi mcp test chrome-devtools
 
-# 3. 使用 Chrome DevTools
+# 3. Use Chrome DevTools
 kimi
 
-> 打开浏览器并访问 https://github.com/MoonshotAI/kimi-cli
-> 截图当前页面
+> Open your browser and visit https://github.com/MoonshotAI/kimi-cli
+> Take a screenshot of the current page
 ```
 ### 7.4 Temporarily load configuration
 
 ```bash
-# 从文件加载
+#Load from file
 kimi --mcp-config-file /path/to/custom-mcp.json
 
-# 内联配置
+# Inline configuration
 kimi --mcp-config '{
   "mcpServers": {
     "test": {
@@ -989,13 +989,13 @@ kimi --mcp-config '{
 
 ### 8.2 Designs that can be learned from
 
-1. **分层架构**
-   - CLI 层、配置层、核心层、客户端层清晰分离
-   - 每层职责明确，易于维护
+1. **Layered Architecture**
+   -Clear separation of CLI layer, configuration layer, core layer and client layer
+   - Each layer has clear responsibilities and is easy to maintain
 
-2. **状态管理**
-   - MCPServerInfo 的状态机设计
-   - 清晰的状态转换逻辑
+2. **Status Management**
+   - State machine design of MCPServerInfo
+   - Clear state transition logic
 
 3. **Tool Encapsulation**
    - MCPTool unified encapsulation MCP tool
@@ -1057,32 +1057,32 @@ This section shows in detail the complete code link of how LLM calls the MCP too
 
 ```python
 async def step(
-    chat_provider: ChatProvider,      # LLM 提供商（如 Kimi API）
-    system_prompt: str,                # 系统提示词
-    toolset: Toolset,                 # 工具集（包含 MCP 工具）
-    history: Sequence[Message],       # 对话历史
+    chat_provider: ChatProvider, # LLM provider (such as Kimi API)
+    system_prompt: str, # system prompt word
+    toolset: Toolset, # Toolset (including MCP tools)
+    history: Sequence[Message], #Conversation history
     *,
-    on_message_part: Callback[[StreamedMessagePart], None] | None = None,  # 流式回调
-    on_tool_result: Callable[[ToolResult], None] | None = None,          # 工具结果回调
+    on_message_part: Callback[[StreamedMessagePart], None] | None = None, # Streaming callback
+    on_tool_result: Callable[[ToolResult], None] | None = None, # Tool result callback
 ) -> "StepResult":
     """
-    运行一个 agent "step"
+    Run an agent "step"
 
-    核心流程：
-    1. 调用 LLM 生成响应（可能包含工具调用）
-    2. 处理工具调用（通过 toolset.handle）
-    3. 返回结果（包含工具结果的 Future）
+    Core process:
+    1. Call LLM to generate a response (may include tool calls)
+    2. Handle tool calls (via toolset.handle)
+    3. Return the result (Future containing the tool result)
     """
     tool_calls: list[ToolCall] = []
     tool_result_futures: dict[str, ToolResultFuture] = {}
 
-    # 工具调用回调
+    # Tool call callback
     async def on_tool_call(tool_call: ToolCall):
         """
-        当 LLM 生成工具调用时触发
+        Triggered when the LLM generation tool is called
 
         Args:
-            tool_call: LLM 生成的工具调用
+            tool_call: tool call generated by LLM
                 {
                     "id": "call_123",
                     "function": {
@@ -1093,36 +1093,36 @@ async def step(
         """
         tool_calls.append(tool_call)
 
-        # 核心：将工具调用分发给 toolset
-        # toolset.handle() 会：
-        # 1. 查找工具（包括 MCP 工具）
-        # 2. 解析参数
-        # 3. 异步执行工具
+        # Core: Distribute tool calls to toolset
+        # toolset.handle() will:
+        # 1. Find tools (including MCP tools)
+        # 2. Parse parameters
+        # 3. Asynchronous execution tool
         result = toolset.handle(tool_call)
 
         if isinstance(result, ToolResult):
-            # 同步返回的结果（如工具未找到、参数解析失败）
+            #Results returned synchronously (such as tool not found, parameter parsing failed)
             future = ToolResultFuture()
             future.add_done_callback(future_done_callback)
             future.set_result(result)
             tool_result_futures[tool_call.id] = future
         else:
-            # 异步执行的任务（实际工具调用）
+            # Tasks executed asynchronously (actual tool calls)
             result.add_done_callback(future_done_callback)
             tool_result_futures[tool_call.id] = result
 
     try:
-        # 调用 generate，传入工具定义和工具调用回调
+        # Call generate, passing in the tool definition and tool call callback
         result = await generate(
-            chat_provider,           # LLM 提供商
-            system_prompt,           # 系统提示词
-            toolset.tools,          # 工具定义（包括 MCP 工具）
-            history,                 # 对话历史
-            on_message_part=on_message_part,   # 流式输出回调
-            on_tool_call=on_tool_call,          # 工具调用回调
+            chat_provider, # LLM provider
+            system_prompt, # system prompt word
+            toolset.tools, # Tool definitions (including MCP tools)
+            history, # conversation history
+            on_message_part=on_message_part, # Streaming output callback
+            on_tool_call=on_tool_call, # Tool call callback
         )
     except (ChatProviderError, asyncio.CancelledError):
-        # 清理：取消所有未完成的工具调用
+        # Cleanup: Cancel all outstanding tool calls
         for future in tool_result_futures.values():
             future.remove_done_callback(future_done_callback)
             future.cancel()
@@ -1130,11 +1130,11 @@ async def step(
         raise
 
     return StepResult(
-        result.id,                    # 消息 ID
-        result.message,              # LLM 生成的消息
-        result.usage,                # Token 使用量
-        tool_calls,                  # 工具调用列表
-        tool_result_futures,        # 工具结果 Future
+        result.id, #Message ID
+        result.message, # LLM generated message
+        result.usage, # Token usage
+        tool_calls, # Tool call list
+        tool_result_futures, # tool results Future
     )
 ```
 **Key Points**:
@@ -1150,27 +1150,27 @@ async def step(
 ```python
 def handle(self, tool_call: ToolCall) -> HandleResult:
     """
-    处理工具调用的入口
+    Entry point for processing tool calls
 
-    输入：LLM 生成的 ToolCall
-    输出：HandleResult（同步或异步结果）
+    Input: ToolCall generated by LLM
+    Output: HandleResult (synchronous or asynchronous result)
     """
-    # 设置当前工具调用上下文（用于审批时获取信息）
+    #Set the current tool calling context (used to obtain information during approval)
     token = current_tool_call.set(tool_call)
 
     try:
-        # 1. 查找工具
+        # 1. Find tool
         if tool_call.function.name not in self._tool_dict:
-            # 工具未找到
+            # Tool not found
             return ToolResult(
                 tool_call_id=tool_call.id,
                 return_value=ToolNotFoundError(tool_call.function.name),
             )
 
-        # 2. 获取工具实例（可能是 MCPTool）
+        # 2. Get the tool instance (probably MCPTool)
         tool = self._tool_dict[tool_call.function.name]
 
-        # 3. 解析参数
+        # 3. Parse parameters
         try:
             arguments: JsonType = json.loads(
                 tool_call.function.arguments or "{}"
@@ -1181,11 +1181,11 @@ def handle(self, tool_call: ToolCall) -> HandleResult:
                 return_value=ToolParseError(str(e))
             )
 
-        # 4. 异步调用工具
-        # 这里的 tool 可能是 MCPTool，它会：
-        # - 请求用户审批
-        # - 调用 MCP 服务器
-        # - 转换结果格式
+        # 4. Asynchronous calling tool
+        # The tool here may be MCPTool, which will:
+        # - Request user approval
+        # - Call MCP server
+        # - Convert result format
         async def _call():
             try:
                 ret = await tool.call(arguments)
@@ -1199,11 +1199,11 @@ def handle(self, tool_call: ToolCall) -> HandleResult:
                     return_value=ToolRuntimeError(str(e))
                 )
 
-        # 返回异步任务
+        # Return to asynchronous task
         return asyncio.create_task(_call())
 
     finally:
-        # 清理上下文
+        # Clean up context
         current_tool_call.reset(token)
 ```
 **Key Points**:
@@ -1218,35 +1218,35 @@ def handle(self, tool_call: ToolCall) -> HandleResult:
 ```python
 async def __call__(self, **kwargs) -> ToolReturnValue:
     """
-    执行 MCP 工具调用
+    Execute MCP tool call
 
-    调用链：
+    Call chain:
     LLM → kosong.step → KimiToolset.handle → MCPTool.__call__
                                                             ↓
-                                                    调用 MCP 服务器
+                                                    Call MCP server
     """
-    # 1. 用户审批（关键安全机制）
+    # 1. User approval (key security mechanism)
     description = f"Call MCP tool `{self._mcp_tool.name}`."
     if not await self._runtime.approval.request(
-        self.name,              # 工具名称
-        self._action_name,      # 动作名称
-        description             # 描述
+        self.name, # Tool name
+        self._action_name, # Action name
+        description # description
     ):
-        return ToolRejectedError()  # 用户拒绝
+        return ToolRejectedError() # User rejected
 
-    # 2. 调用 fastmcp 客户端
+    # 2. Call fastmcp client
     try:
         async with self._client as client:
             result = await client.call_tool(
-                self._mcp_tool.name,    # MCP 工具名称
-                kwargs,                # 参数
-                timeout=self._timeout,   # 超时控制
-                raise_on_error=False    # 不抛出错误，返回错误响应
+                self._mcp_tool.name, # MCP tool name
+                kwargs, # parameters
+                timeout=self._timeout, # Timeout control
+                raise_on_error=False #Do not throw an error, return an error response
             )
-            # 3. 转换 MCP 结果为 Kimi 格式
+            # 3. Convert MCP results to Kimi format
             return convert_mcp_tool_result(result)
     except Exception as e:
-        # 4. 处理超时和错误
+        # 4. Handle timeouts and errors
         exc_msg = str(e).lower()
         if "timeout" in exc_msg or "timed out" in exc_msg:
             return ToolError(
@@ -1271,34 +1271,34 @@ async def __call__(self, **kwargs) -> ToolReturnValue:
 ```python
 async def _step(self) -> StepOutcome | None:
     """
-    执行单个推理步骤
+    Perform a single inference step
 
-    返回：StepOutcome 或 None（继续）
+    Returns: StepOutcome or None (continue)
     """
     assert self._runtime.llm is not None
     chat_provider = self._runtime.llm.chat_provider
 
-    # 1. 调用 kosong.step（包含 LLM 调用和工具分发）
+    # 1. Call kosong.step (including LLM call and tool distribution)
     result = await kosong.step(
         chat_provider,
-        self._agent.system_prompt,    # 系统提示词
-        self._agent.toolset,           # 工具集（包含 MCP 工具）
-        self._context.history,         # 对话历史
-        on_message_part=wire_send,     # 流式输出回调
-        on_tool_result=wire_send,      # 工具结果回调
+        self._agent.system_prompt, # system prompt word
+        self._agent.toolset, # Toolset (including MCP tools)
+        self._context.history, #Conversation history
+        on_message_part=wire_send, # Streaming output callback
+        on_tool_result=wire_send, # Tool result callback
     )
 
-    # 2. 等待所有工具调用完成
+    # 2. Wait for all tool calls to complete
     results = await result.tool_results()
 
-    # 3. 将结果添加到上下文
+    # 3. Add the result to the context
     await self._grow_context(result, results)
 
-    # 4. 检查是否有工具调用
+    # 4. Check if there is a tool call
     if result.tool_calls:
-        return None  # 有工具调用，继续循环
+        return None # There is a tool call, continue the loop
 
-    # 5. 没有工具调用，停止
+    # 5. No tool calls, stop
     return StepOutcome(
         stop_reason="no_tool_calls",
         assistant_message=result.message
@@ -1309,18 +1309,18 @@ async def _step(self) -> StepOutcome | None:
 #### Tool definition conversion
 
 ```python
-# kosong 从 Toolset 提取工具定义
-# 位置：packages/kosong/src/kosong/_generate.py
+# kosong extracts tool definitions from Toolset
+# Location: packages/kosong/src/kosong/_generate.py
 
 async def generate(
     chat_provider: ChatProvider,
     system_prompt: str,
-    tools: Sequence[Tool],  # 这里传入所有工具定义
+    tools: Sequence[Tool], # Pass in all tool definitions here
     history: Sequence[Message],
     ...
 ) -> "GenerateResult":
 
-    # 将工具转换为 LLM API 格式
+    # Convert tool to LLM API format
     tool_declarations = [
         {
             "name": tool.name,
@@ -1330,19 +1330,19 @@ async def generate(
         for tool in tools
     ]
 
-    # 调用 LLM API
+    # Call LLM API
     response = await chat_provider.generate_content({
         "system_instruction": system_prompt,
         "contents": history,
-        "tools": tool_declarations,  # 告诉 LLM 有哪些工具可用
+        "tools": tool_declarations, # Tell LLM what tools are available
         "tool_config": {
             "function_calling_config": {
-                "mode": "ANY"  # 允许 LLM 自动调用工具
+                "mode": "ANY" # Allow LLM to automatically call tools
             }
         }
     })
 
-    # 处理流式响应和工具调用
+    # Handle streaming responses and tool calls
     ...
 ```
 **Key Points**:
@@ -1353,7 +1353,7 @@ async def generate(
 #### How to register the MCP tool
 
 ```python
-# 1. MCP 工具创建（mcp-client.py）
+# 1. MCP tool creation (mcp-client.py)
 async def discover_tools() -> list[DiscoveredMCPTool]:
     tools = []
     for mcp_tool in await client.list_tools():
@@ -1366,17 +1366,17 @@ async def discover_tools() -> list[DiscoveredMCPTool]:
         tools.append(tool)
     return tools
 
-# 2. 工具注册到 Toolset（toolset.py:230-233）
+# 2. Register the tool to Toolset (toolset.py:230-233)
 for tool in tools:
-    self.add(tool)  # 添加到 _tool_dict
+    self.add(tool) # Add to _tool_dict
 
-# 3. LLM 可以看到这些工具
-# toolset.tools 返回所有工具的 Tool 定义
+# 3. LLM can see these tools
+# toolset.tools returns the Tool definitions of all tools
 ```
 ### 9.3 Complete call sequence diagram
 
 ```
-用户输入 "使用 context7 搜索 Python MCP 教程"
+User input "Search for Python MCP tutorial using context7"
     ↓
 kimisoul._turn()
     ↓
@@ -1397,7 +1397,7 @@ kosong.step(
     ↓
 generate()
     ↓
-Kimi API 调用
+Kimi API calls
     POST /chat/completions
 {
     "messages": [...],
@@ -1417,13 +1417,13 @@ Kimi API 调用
     ]
 }
     ↓
-Kimi API 返回流式响应
-    ├── Content: "好的，我来帮你搜索..."
+Kimi API returns streaming response
+    ├── Content: "Okay, let me search for you..."
     └── FunctionCall: {
             "id": "call_abc123",
             "function": {
                 "name": "context7_search",
-                "arguments": '{"query": "Python MCP 教程", "limit": 10}'
+                "arguments": '{"query": "Python MCP Tutorial", "limit": 10}'
             }
          }
     ↓
@@ -1431,47 +1431,47 @@ on_tool_call(tool_call)
     ↓
 toolset.handle(tool_call)
     ↓
-找到 MCPTool("context7_search")
+Find MCPTool("context7_search")
     ↓
-MCPTool.__call__(**{"query": "Python MCP 教程", "limit": 10})
+MCPTool.__call__(**{"query": "Python MCP Tutorial", "limit": 10})
     ↓
 runtime.approval.request(...)
     ↓
-[用户审批界面]
+[User Approval Interface]
     ↓
-用户点击"允许"
+User clicks "Allow"
     ↓
-client.call_tool("search", {"query": "Python MCP 教程", "limit": 10})
+client.call_tool("search", {"query": "Python MCP Tutorial", "limit": 10})
     ↓
-MCP 服务器返回结果
+MCP server returns results
     ↓
 convert_mcp_tool_result(result)
     ↓
 ToolResult(return_value=ToolOk(output=[...]))
     ↓
-返回给 kosong.step
+Return to kosong.step
     ↓
 _kimisoul._grow_context(result, results)
     ↓
-添加到对话历史
+Add to conversation history
     ↓
-继续下一轮 LLM 调用（包含工具结果）
+Continue to next round of LLM calls (containing tool results)
 ```
 ### 9.4 Key data structure conversion
 
 #### LLM FunctionCall → Kimi ToolCall
 
 ```python
-# LLM 返回的格式
+# LLM return format
 function_call = {
     "id": "call_abc123",
     "function": {
-        "name": "context7_search",  # LLM 看到的工具名称
+        "name": "context7_search", # The name of the tool seen by LLM
         "arguments": '{"query": "...", "limit": 10}'
     }
 }
 
-# 转换为 Kimi ToolCall
+# Convert to Kimi ToolCall
 tool_call = ToolCall(
     id=function_call["id"],
     function=FunctionCall(
@@ -1484,21 +1484,21 @@ tool_call = ToolCall(
 #### Tool Result → LLM Context
 
 ```python
-# MCP 工具返回的原始结果
+# Raw results returned by the MCP tool
 mcp_result = {
     "content": [
-        {"type": "text", "text": "找到 10 个相关结果..."},
+        {"type": "text", "text": "10 related results found..."},
         {"type": "image", "data": "base64...", "mimeType": "image/png"}
     ]
 }
 
-# 转换为 Kimi ContentPart
+# Convert to Kimi ContentPart
 content_parts = [
-    ContentPart(text="找到 10 个相关结果..."),
+    ContentPart(text="10 related results found..."),
     ContentPart(image="base64...")
 ]
 
-# 转换为 LLM FunctionResponse
+# Convert to LLM FunctionResponse
 tool_result_message = Message(
     role="tool",
     content=[
@@ -1509,7 +1509,7 @@ tool_result_message = Message(
     ]
 )
 
-# 添加到对话历史
+# Add to conversation history
 history.append(tool_result_message)
 ```
 ### 9.5 Comparison with Gemini CLI
@@ -1540,17 +1540,17 @@ history.append(tool_result_message)
 
 ```
 src/kimi_cli/
-├── cli/mcp.py                    # MCP CLI 命令 (350 行)
-├── soul/toolset.py               # 工具集核心 (467 行)
-├── acp/mcp.py                    # ACP 协议适配 (47 行)
-├── config.py                     # 配置定义 (200+ 行)
-└── exception.py                  # 异常定义
+├── cli/mcp.py # MCP CLI command (line 350)
+├── soul/toolset.py # Toolset core (line 467)
+├── acp/mcp.py # ACP protocol adaptation (line 47)
+├── config.py # Configuration definition (200+ lines)
+└── exception.py #Exception definition
 
-关键类：
-- KimiToolset: 工具集管理
-- MCPTool: MCP 工具封装
-- MCPServerInfo: 服务器连接信息
-- MCPConfig: 配置定义
+Key categories:
+- KimiToolset: Toolset management
+- MCPTool: MCP tool package
+- MCPServerInfo: server connection information
+- MCPConfig: configuration definition
 ```
 ### B. Configuration file example
 

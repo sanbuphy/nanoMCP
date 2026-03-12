@@ -31,26 +31,26 @@
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ USB 生态系统                                            │
+│ USB Ecosystem │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  鼠标厂商 ──[遵循 USB 协议]──> USB 标准                 │
+│ Mouse manufacturer ──[Follow USB protocol]──> USB standard │
 │                                ↓                        │
-│  Windows ──[实现 USB 驱动]──> 识别并使用鼠标            │
-│  Mac     ──[实现 USB 驱动]──> 识别并使用鼠标            │
-│  Linux   ──[实现 USB 驱动]──> 识别并使用鼠标            │
+│ Windows ──[Implement USB driver]──> Recognize and use the mouse │
+│ Mac ──[Implement USB driver]──> Recognize and use the mouse │
+│ Linux ──[Implement USB driver]──> Recognize and use the mouse │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
-│ MCP 生态系统                                            │
+│ MCP Ecosystem │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  Tavily ──[遵循 MCP 协议]──> MCP 标准                   │
+│ Tavily ──[Comply with MCP protocol]──> MCP standard │
 │                            ↓                            │
-│  Claude Desktop ──[实现 MCP 客户端]──> 使用 Tavily      │
-│  Cursor IDE     ──[实现 MCP 客户端]──> 使用 Tavily      │
-│  自定义应用     ──[实现 MCP 客户端]──> 使用 Tavily      │
+│ Claude Desktop ──[Implementing MCP client]──> Using Tavily │
+│ Cursor IDE ──[Implementing MCP client]──> Using Tavily │
+│ Custom application ──[Implementing MCP client]──> Using Tavily │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -58,19 +58,19 @@
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                    MCP 架构                              │
+│ MCP Architecture │
 ├──────────────────────────────────────────────────────────┤
 │                                                           │
 │  ┌─────────────┐         ┌─────────────┐                │
-│  │ MCP 服务器  │         │ MCP 客户端  │                │
+│ │ MCP Server │ │ MCP Client │ │
 │  │             │         │             │                │
-│  │ • 暴露工具  │<------->│ • 连接服务器│                │
-│  │ • 暴露资源  │ JSON-RPC│ • 获取工具  │                │
-│  │ • 暴露提示  │         │ • 调用工具  │                │
-│  │             │         │ • 格式转换  │                │
+│ │ • Exposure tools │<------->│ • Connect to server │ │
+│ │ • Exposed resources │ JSON-RPC│ • Get tools │ │
+│ │ • Exposure tips │ │ • Call tools │ │
+│ │ │ │ • Format conversion │ │
 │  └─────────────┘         └─────────────┘                │
 │       ↓                        ↓                         │
-│  Tavily/GitHub/Slack    Claude/Cursor/自定义应用         │
+│ Tavily/GitHub/Slack Claude/Cursor/Custom Application │
 │                                                           │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -96,18 +96,18 @@
   "properties": {
     "name": {
       "type": "string",
-      "description": "用户姓名"
+      "description": "user name"
     },
     "age": {
       "type": "integer",
-      "description": "用户年龄",
+      "description": "User age",
       "minimum": 0,
       "maximum": 150
     },
     "email": {
       "type": "string",
       "format": "email",
-      "description": "用户邮箱"
+      "description": "User Email"
     }
   },
   "required": ["name", "email"]
@@ -117,7 +117,7 @@
 
 ```json
 {
-  "name": "张三",
+  "name": "Zhang San",
   "age": 25,
   "email": "zhangsan@example.com"
 }
@@ -128,7 +128,7 @@
 {
   "age": 25,
   "email": "zhangsan@example.com"
-  // ❌ 缺少必需的 "name" 字段
+  // ❌ Missing required "name" field
 }
 ```
 ### Application in MCP
@@ -136,40 +136,40 @@
 MCP uses JSON Schema to describe the input parameters of the tool:
 
 ```python
-# MCP 服务器定义工具
+# MCP server definition tool
 
 @mcp.tool()
 def search_web(
-    query: str,                    # string 类型
-    max_results: int = 10,         # integer 类型，默认值 10
-    search_depth: str = "basic"    # string 类型，默认值 "basic"
+    query: str, # string type
+    max_results: int = 10, # integer type, default value 10
+    search_depth: str = "basic" # string type, default value "basic"
 ) -> str:
     """
-    搜索网络获取最新信息
+    Search the web for the latest information
 
-    这个函数会被自动转换为以下 JSON Schema：
+    This function will be automatically converted to the following JSON Schema:
     """
     pass
 
-# 自动转换为：
+# Automatically converted to:
 {
   "name": "search_web",
-  "description": "搜索网络获取最新信息",
+  "description": "Search the web for the latest information",
   "inputSchema": {
     "type": "object",
     "properties": {
       "query": {
         "type": "string",
-        "description": "搜索关键词"
+        "description": "Search keywords"
       },
       "max_results": {
         "type": "integer",
-        "description": "最大结果数",
+        "description": "Maximum number of results",
         "default": 10
       },
       "search_depth": {
         "type": "string",
-        "description": "搜索深度",
+        "description": "Search depth",
         "default": "basic",
         "enum": ["basic", "advanced"]
       }
@@ -196,19 +196,19 @@ def search_web(
 │ MCP vs Function Calling                                 │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  MCP（协议标准）                                        │
+│ MCP (Protocol Standard) │
 │  ────────────────────                                  │
-│  • 定义如何暴露工具                                     │
-│  • 定义通信协议（JSON-RPC）                             │
-│  • 定义工具描述格式（JSON Schema）                      │
-│  • 类似 USB 接口标准                                    │
+│ • Define how to expose tools │
+│ • Define communication protocol (JSON-RPC) │
+│ • Define tool description format (JSON Schema) │
+│ • Similar to USB interface standard │
 │                                                         │
-│  Function Calling（执行机制）                           │
+│ Function Calling (Execution Mechanism) │
 │  ─────────────────────────────                         │
-│  • LLM 如何调用工具                                     │
-│  • 如何传递参数                                         │
-│  • 如何接收返回结果                                     │
-│  • 类似设备驱动程序                                     │
+│ • How to call tools in LLM │
+│ • How to pass parameters │
+│ • How to receive return results │
+│ • Similar device drivers │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -227,24 +227,24 @@ def search_web(
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ MCP 如何使用 Function Calling                           │
+│ How MCP uses Function Calling │
 ├─────────────────────────────────────────────────────────┤
 │                                                         │
-│  1. MCP 服务器暴露工具                                  │
+│ 1. MCP server exposure tool │
 │     ↓                                                   │
-│  2. MCP 客户端获取工具列表                              │
+│ 2. MCP client acquisition tool list │
 │     ↓                                                   │
-│  3. 客户端将 MCP 工具转换为 LLM 格式                    │
+│ 3. The client converts the MCP tool to LLM format │
 │     ↓                                                   │
-│  4. LLM 使用 Function Calling 决定调用哪个工具          │
+│ 4. LLM uses Function Calling to decide which tool to call │
 │     ↓                                                   │
-│  5. 客户端拦截工具调用，转发给 MCP 服务器               │
+│ 5. The client intercepts the tool call and forwards it to the MCP server │
 │     ↓                                                   │
-│  6. MCP 服务器执行并返回结果                            │
+│ 6. MCP server executes and returns results │
 │     ↓                                                   │
-│  7. 客户端将结果转给 LLM                                │
+│ 7. The client transfers the results to LLM │
 │     ↓                                                   │
-│  8. LLM 生成最终答案                                    │
+│ 8. LLM generates final answer │
 │                                                         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -260,33 +260,33 @@ Let's say you have 3 LLM applications and 3 tools that need to be integrated:
 #### ❌ Traditional method (without MCP)
 
 ```
-要做的集成：
+Integration to be done:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Claude Desktop  →  Tavily API  (需要写 1 次集成代码)
-Claude Desktop  →  GitHub API  (需要写 1 次集成代码)
-Claude Desktop  →  Slack API   (需要写 1 次集成代码)
+Claude Desktop → Tavily API (needs to write 1 integration code)
+Claude Desktop → GitHub API (needs to write 1 integration code)
+Claude Desktop → Slack API (needs to write 1 integration code)
 
-Cursor IDE     →  Tavily API  (需要写 1 次集成代码)
-Cursor IDE     →  GitHub API  (需要写 1 次集成代码)
-Cursor IDE     →  Slack API   (需要写 1 次集成代码)
+Cursor IDE → Tavily API (need to write 1 integration code)
+Cursor IDE → GitHub API (needs to write 1 integration code)
+Cursor IDE → Slack API (needs to write 1 integration code)
 
-自定义应用     →  Tavily API  (需要写 1 次集成代码)
-自定义应用     →  GitHub API  (需要写 1 次集成代码)
-自定义应用     →  Slack API   (需要写 1 次集成代码)
+Custom application → Tavily API (need to write 1 integration code)
+Custom application → GitHub API (needs to write 1 integration code)
+Custom application → Slack API (needs to write 1 integration code)
 
-总计：3 × 3 = 9 次集成 🫠
+Total: 3 × 3 = 9 integrations 🫠
 ```
 #### Problem details
 
 **1. The tool definition format is not uniform**
 
 ```typescript
-// Claude 格式
+// Claude format
 const claudeTool = {
   name: 'search',
-  description: '搜索网络',
-  input_schema: {              // ← 注意：input_schema
+  description: 'Search network',
+  input_schema: { // ← Note: input_schema
     type: 'object',
     properties: {
       query: { type: 'string' }
@@ -294,13 +294,13 @@ const claudeTool = {
   }
 };
 
-// OpenAI 格式
+// OpenAI format
 const openaiTool = {
   type: 'function',
   function: {
     name: 'search',
-    description: '搜索网络',
-    parameters: {                // ← 注意：parameters
+    description: 'Search network',
+    parameters: { // ← Note: parameters
       type: 'object',
       properties: {
         query: { type: 'string' }
@@ -309,15 +309,15 @@ const openaiTool = {
   }
 };
 
-// Gemini 格式
+// Gemini format
 const geminiTool = {
   name: 'search',
-  description: '搜索网络',
-  parameters: {                  // ← 注意：parameters
+  description: 'Search network',
+  parameters: { // ← Note: parameters
     type: 'object',
     properties: {
       query: { type: 'string' },
-      maxResults: { type: 'integer' }  // ← 注意：camelCase
+      maxResults: { type: 'integer' } // ← Note: camelCase
     }
   }
 };
@@ -325,28 +325,28 @@ const geminiTool = {
 **2. API calling methods are different**
 
 ```typescript
-// Claude API 调用
+//Claude API call
 const response = await anthropic.messages.create({
   model: 'claude-3-5-sonnet-20241022',
   tools: [claudeTool],
   messages: [...]
 });
 
-// OpenAI API 调用
+// OpenAI API call
 const response = await openai.chat.completions.create({
   model: 'gpt-4-turbo',
   tools: [openaiTool],
   messages: [...]
 });
 
-// Gemini API 调用
+// Gemini API call
 const model = genAI.getGenerativeModel({ model: 'gemini-pro' });
 const response = await model.generateContent(prompt);
 ```
 **3. The tool calling structure is different**
 
 ```typescript
-// Claude 的工具调用
+// Claude's tool call
 {
   type: 'tool_use',
   id: 'toolu_xxx',
@@ -354,95 +354,95 @@ const response = await model.generateContent(prompt);
   input: { query: 'test' }
 }
 
-// OpenAI 的工具调用
+// OpenAI tool call
 {
   id: 'call_xxx',
   type: 'function',
   function: {
     name: 'search',
-    arguments: '{"query":"test"}'  // ← JSON 字符串！
+    arguments: '{"query":"test"}' // ← JSON string!
   }
 }
 
-// Gemini 的工具调用
+// Gemini tool call
 {
   name: 'search',
-  args: { query: 'test' }  // ← 直接是对象
+  args: { query: 'test' } // ← directly object
 }
 ```
 #### ✅ MCP method
 
 ```
-工具提供者只需写 1 次 MCP 服务器：
+Tool providers only need to write to the MCP server once:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Tavily MCP Server  (写 1 次，支持 stdio/HTTP)
-GitHub MCP Server  (写 1 次，支持 stdio/HTTP)
-Slack MCP Server   (写 1 次，支持 stdio/HTTP)
+Tavily MCP Server (write 1 time, supports stdio/HTTP)
+GitHub MCP Server (write 1 time, supports stdio/HTTP)
+Slack MCP Server (written 1 time, supports stdio/HTTP)
 
-任何支持 MCP 的客户端都能用：
+Any client that supports MCP will work:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Claude Desktop  →  配置 .mcp.json  →  自动连接所有服务器
-Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
-自定义应用     →  配置 .mcp.json  →  自动连接所有服务器
+Claude Desktop → Configure .mcp.json → Automatically connect to all servers
+Cursor IDE → Configure .mcp.json → Automatically connect to all servers
+Custom application → Configure .mcp.json → Automatically connect to all servers
 
-总计：3 个服务器 + N 个客户端配置 = 3 + N 🎉
+Total: 3 servers + N client configurations = 3 + N 🎉
 ```
 ### Complexity comparison
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│ 传统方式：双向适配（NxM 复杂度）                         │
+│ Traditional method: two-way adaptation (NxM complexity) │
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
-│   工具提供者              LLM 客户端                     │
+│ Tool Provider LLM Client │
 │      ↓                      ↓                           │
-│  Tavily 团队            Claude Desktop                  │
-│  ├─ Claude 适配         ├─ 实现 Claude 工具系统         │
-│  ├─ OpenAI 适配         ├─ 为 Tavily 写适配            │
-│  └─ Gemini 适配         ├─ 为 GitHub 写适配            │
-│                         └─ 为 Slack 写适配              │
+│ Tavily Team Claude Desktop │
+│ ├─ Claude adaptation ├─ Implementing Claude tool system │
+│ ├─ OpenAI adaptation ├─ Writing adaptation for Tavily │
+│ └─ Gemini adaptation ├─ Write adaptation for GitHub │
+│ └─Write an adaptation for Slack │
 │                                                          │
-│  GitHub 团队            Cursor IDE                       │
-│  ├─ Claude 适配         ├─ 实现 OpenAI 工具系统         │
-│  ├─ OpenAI 适配         ├─ 为 Tavily 写适配            │
-│  └─ Gemini 适配         ├─ 为 GitHub 写适配            │
-│                         └─ 为 Slack 写适配              │
+│ GitHub Team Cursor IDE │
+│ ├─ Claude adaptation ├─ Implementing OpenAI tool system │
+│ ├─ OpenAI adaptation ├─ Writing adaptation for Tavily │
+│ └─ Gemini adaptation ├─ Write adaptation for GitHub │
+│ └─Write an adaptation for Slack │
 │                                                          │
-│  Slack 团队              自定义应用                      │
-│  ├─ Claude 适配         ├─ 实现 Gemini 工具系统         │
-│  ├─ OpenAI 适配         ├─ 为 Tavily 写适配            │
-│  └─ Gemini 适配         ├─ 为 GitHub 写适配            │
-│                         └─ 为 Slack 写适配              │
+│ Slack Team Custom App │
+│ ├─ Claude adaptation ├─ Implementing Gemini tool system │
+│ ├─ OpenAI adaptation ├─ Writing adaptation for Tavily │
+│ └─ Gemini adaptation ├─ Write adaptation for GitHub │
+│ └─Write an adaptation for Slack │
 │                                                          │
-│  结果：混乱、重复、难以维护                              │
-│  总代码量：~450 行 × 3 = 1350+ 行                        │
+│ Result: Chaos, duplication, difficult to maintain │
+│ Total code size: ~450 lines × 3 = 1350+ lines │
 └─────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────┐
-│ MCP 方式：单向责任（N+M 复杂度）                        │
+│ MCP method: one-way responsibility (N+M complexity) │
 ├─────────────────────────────────────────────────────────┤
 │                                                          │
-│   工具提供者              LLM 客户端                     │
+│ Tool Provider LLM Client │
 │      ↓                      ↓                           │
-│  Tavily 团队            Claude Desktop                  │
-│  └─ MCP 服务器          └─ MCP 客户端适配器             │
-│     (50 行代码)             (200 行代码)                 │
+│ Tavily Team Claude Desktop │
+│ └─ MCP Server └─ MCP Client Adapter │
+│ (50 lines of code) (200 lines of code) │
 │                             ↓                           │
-│  GitHub 团队              自动能用所有                   │
-│  └─ MCP 服务器          MCP 服务器！                    │
-│     (100 行代码)                                        │
+│ GitHub Team automatically works with all │
+│ └─ MCP Server MCP Server!                    │
+│ (100 lines of code) │
 │                             ↓                           │
-│  Slack 团队             Cursor IDE                       │
-│  └─ MCP 服务器          └─ MCP 客户端适配器             │
-│     (80 行代码)             (200 行代码)                 │
+│ Slack Team Cursor IDE │
+│ └─ MCP Server └─ MCP Client Adapter │
+│ (80 lines of code) (200 lines of code) │
 │                             ↓                           │
-│                         自动能用所有                    │
-│                         MCP 服务器！                     │
+│ Automatically available for all │
+│MCP Server!                     │
 │                                                          │
-│  结果：清晰、可复用、易维护                               │
-│  总代码量：~230 行（服务器）+ 600 行（客户端）= 830 行   │
+│ Result: clear, reusable, easy to maintain │
+│ Total code size: ~230 lines (server) + 600 lines (client) = 830 lines │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -454,20 +454,20 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 1: Claude Desktop 启动                                  │
-│ - 读取 ~/.claude/config.json 或项目的 .mcp.json             │
-│ - 解析出要启动的 MCP 服务器列表                              │
+│ Step 1: Claude Desktop Launch │
+│ - Read ~/.claude/config.json or the project's .mcp.json │
+│ - Parse out the list of MCP servers to be started │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 2: 启动 MCP 服务器                                     │
-│ - 执行: npx -y tavily-mcp                                   │
-│ - 通过 stdio（标准输入/输出）建立通信管道                    │
-│ - 服务器进程启动，等待 JSON-RPC 请求                         │
+│ Step 2: Start MCP Server │
+│ - Execution: npx -y tavily-mcp │
+│ - Establish communication pipeline through stdio (standard input/output) │
+│ - Server process starts, waiting for JSON-RPC request │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 3: 初始化握手 (JSON-RPC)                               │
+│ Step 3: Initial Handshake (JSON-RPC) │
 │                                                              │
 │ Claude → Tavily:                                             │
 │ {                                                            │
@@ -495,7 +495,7 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 │   "result": {                                               │
 │     "protocolVersion": "2025-06-18",                        │
 │     "capabilities": {                                       │
-│       "tools": {}    // ← 声明支持 tools                    │
+│ "tools": {} // ← Declare support for tools │
 │     },                                                      │
 │     "serverInfo": {                                         │
 │       "name": "tavily-mcp",                                 │
@@ -506,13 +506,13 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 4: 获取工具列表                                         │
+│ Step 4: Get a list of tools │
 │                                                              │
 │ Claude → Tavily:                                             │
 │ {                                                            │
 │   "jsonrpc": "2.0",                                         │
 │   "id": 2,                                                  │
-│   "method": "tools/list"    // ← MCP 标准方法                │
+│ "method": "tools/list" // ← MCP standard method │
 │ }                                                            │
 └─────────────────────────────────────────────────────────────┘
                           ↓
@@ -524,18 +524,18 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 │   "result": {                                               │
 │     "tools": [                                               │
 │       {                                                      │
-│         "name": "tavily_search",        // ← 工具名          │
-│         "description": "搜索网络获取最新信息",               │
+│ "name": "tavily_search", // ← Tool name │
+│ "description": "Search the web for the latest information", │
 │         "inputSchema": {                                     │
 │           "type": "object",                                  │
 │           "properties": {                                    │
 │             "query": {                                       │
 │               "type": "string",                              │
-│               "description": "搜索关键词"                    │
+│ "description": "Search keywords" │
 │             },                                               │
 │             "max_results": {                                 │
 │               "type": "integer",                             │
-│               "description": "最大结果数",                   │
+│ "description": "Maximum number of results", │
 │               "default": 10                                  │
 │             }                                                │
 │           },                                                  │
@@ -544,12 +544,12 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 │       },                                                      │
 │       {                                                      │
 │         "name": "tavily_extract",                            │
-│         "description": "提取网页内容",                        │
+│ "description": "Extract web content", │
 │         "inputSchema": { ... }                               │
 │       },                                                      │
 │       {                                                      │
 │         "name": "tavily_research",                           │
-│         "description": "深度研究",                            │
+│ "description": "In-depth research", │
 │         "inputSchema": { ... }                               │
 │       }                                                      │
 │     ]                                                        │
@@ -558,47 +558,47 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 5: Claude 把工具定义转换为自己的函数定义                │
+│ Step 5: Claude converts the tool definition into his own function definition │
 │                                                              │
-│ MCP 工具格式 → Claude 函数格式：                              │
+│ MCP tool format → Claude function format: │
 │                                                              │
 │ {                                                            │
 │   "name": "tavily_search",                                   │
-│   "description": "搜索网络获取最新信息",                      │
+│ "description": "Search the web for the latest information", │
 │   "input_schema": { ... }                                    │
 │ }                                                            │
-│                        ↓ 转换                                │
+│ ↓ Convert │
 │                                                              │
-│ 这个定义被添加到 Claude 的系统提示词中！                      │
+│ This definition was added to Claude's system prompt words!                      │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 6: 用户提问                                             │
+│ Step 6: User questions │
 │                                                              │
-│ 用户: "搜索 MCP 相关信息"                                     │
+│ User: "Search MCP related information" │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 7: Claude 决定调用工具                                   │
+│ Step 7: Claude decides to call the tool │
 │                                                              │
-│ Claude 的系统提示词包含：                                     │
+│ Claude’s system prompt words include: │
 │                                                              │
-│ 你可以使用以下工具：                                          │
-│ - mcp__tavily__tavily_search: 搜索网络获取最新信息           │
-│ - mcp__tavily__tavily_extract: 提取网页内容                  │
+│ You can use the following tools: │
+│ - mcp__tavily__tavily_search: Search the web for the latest information │
+│ - mcp__tavily__tavily_extract: Extract web page content │
 │ - ...                                                       │
 │                                                              │
-│ Claude 分析用户意图 → 决定调用 tavily_search                  │
+│ Claude analyzes user intent → decides to call tavily_search │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 8: Function Calling (Claude API 调用)                   │
+│ Step 8: Function Calling (Claude API call) │
 │                                                              │
-│ Claude 生成:                                                 │
+│ Claude generated: │
 │ {                                                            │
 │   "type": "tool_use",                                       │
 │   "id": "toolu_xxx",                                        │
-│   "name": "mcp__tavily__tavily_search",  // ← mcp__服务器名__工具名 │
+│ "name": "mcp__tavily__tavily_search", // ← mcp__server name__tool name │
 │   "input": {                                                │
 │     "query": "MCP",                                         │
 │     "max_results": 5                                        │
@@ -607,16 +607,16 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 9: Claude Desktop 拦截工具调用                          │
+│ Step 9: Claude Desktop Interception Tool Call │
 │                                                              │
-│ Claude Desktop 看到 "mcp__tavily__tavily_search":            │
-│ 1. 解析出: 服务器 = tavily, 工具 = tavily_search             │
-│ 2. 通过 stdio 向 Tavily MCP 发送 JSON-RPC:                   │
+│ Claude Desktop sees "mcp__tavily__tavily_search": │
+│ 1. Parse out: server = tavily, tool = tavily_search │
+│ 2. Send JSON-RPC to Tavily MCP via stdio: │
 │                                                              │
 │ {                                                            │
 │   "jsonrpc": "2.0",                                         │
 │   "id": 3,                                                  │
-│   "method": "tools/call",    // ← MCP 标准方法                │
+│ "method": "tools/call", // ← MCP standard method │
 │   "params": {                                               │
 │     "name": "tavily_search",                                │
 │     "arguments": {                                          │
@@ -628,11 +628,11 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 10: Tavily MCP 执行搜索                                 │
+│ Step 10: Tavily MCP Performs Search │
 │                                                              │
-│ - Tavily MCP 调用 Tavily API                                 │
-│ - 获取搜索结果                                               │
-│ - 通过 stdio 返回:                                           │
+│ - Tavily MCP calls Tavily API │
+│ - Get search results │
+│ - Return via stdio: │
 │                                                              │
 │ {                                                            │
 │   "jsonrpc": "2.0",                                         │
@@ -641,7 +641,7 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 │     "content": [                                            │
 │       {                                                      │
 │         "type": "text",                                     │
-│         "text": "搜索结果..."                                │
+│ "text": "Search results..." │
 │       }                                                      │
 │     ],                                                      │
 │     "isError": false                                        │
@@ -650,19 +650,19 @@ Cursor IDE     →  配置 .mcp.json  →  自动连接所有服务器
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 11: Claude Desktop 把结果转给 Claude                     │
+│ Step 11: Claude Desktop Transfer results to Claude │
 │                                                              │
-│ Claude Desktop 把 MCP 结果转换为 Claude API 格式:             │
+│ Claude Desktop converts MCP results to Claude API format: │
 │                                                              │
 │ {                                                            │
 │   "type": "tool_result",                                    │
 │   "tool_use_id": "toolu_xxx",                               │
-│   "content": "搜索结果..."                                    │
+│ "content": "Search results..." │
 │ }                                                            │
 └─────────────────────────────────────────────────────────────┘
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
-│ 步骤 12: Claude 基于工具结果生成最终答案                      │
+│ Step 12: Claude generates the final answer based on the tool results │
 └─────────────────────────────────────────────────────────────┘
 ```
 ### Key protocol: JSON-RPC 2.0
@@ -674,27 +674,27 @@ MCP uses JSON-RPC 2.0 as the communication protocol. JSON-RPC is a lightweight r
 ```json
 {
   "jsonrpc": "2.0",
-  "method": "方法名",
-  "params": { /* 参数 */ },
+  "method": "method name",
+  "params": { /* parameters */ },
   "id": 1
 }
 ```
 #### Standard methods defined by MCP
 
 ```javascript
-// 1. 初始化
+// 1. Initialization
 { "jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {...} }
 
-// 2. 列出工具
+// 2. List tools
 { "jsonrpc": "2.0", "id": 2, "method": "tools/list" }
 
-// 3. 调用工具
+// 3. Call the tool
 { "jsonrpc": "2.0", "id": 3, "method": "tools/call", "params": {...} }
 
-// 4. 列出资源
+// 4. List resources
 { "jsonrpc": "2.0", "id": 4, "method": "resources/list" }
 
-// 5. 读取资源
+// 5. Read resources
 { "jsonrpc": "2.0", "id": 5, "method": "resources/read", "params": {...} }
 ```
 
@@ -707,10 +707,10 @@ MCP uses JSON-RPC 2.0 as the communication protocol. JSON-RPC is a lightweight r
 ```json
 {
   "mcpServers": {
-    "tavily": {                           // 服务器名称（自定义）
-      "command": "npx",                   // 启动命令
-      "args": ["-y", "tavily-mcp"],       // 命令参数
-      "env": {                            // 环境变量
+    "tavily": { // Server name (custom)
+      "command": "npx", // Start command
+      "args": ["-y", "tavily-mcp"], // command parameters
+      "env": { // environment variables
         "TAVILY_API_KEY": "tvly-..."
       }
     },
@@ -735,53 +735,53 @@ MCP uses JSON-RPC 2.0 as the communication protocol. JSON-RPC is a lightweight r
 ### Configuration file parsing process
 
 ```typescript
-// 伪代码：Claude Desktop 如何读取配置
+// Pseudocode: How Claude Desktop reads configuration
 
 async function loadMCPServers() {
-  // 1. 读取全局配置
+  // 1. Read global configuration
   const globalConfig = await readFile('~/.claude/config.json');
 
-  // 2. 读取项目配置（如果存在）
+  // 2. Read the project configuration (if it exists)
   const projectConfig = await readFile('.mcp.json');
 
-  // 3. 合并配置
+  // 3. Merge configuration
   const allServers = {
     ...globalConfig.mcpServers,
     ...projectConfig.mcpServers
   };
 
-  // 4. 启动所有服务器
+  // 4. Start all servers
   for (const [name, config] of Object.entries(allServers)) {
     await startMCPServer(name, config);
   }
 }
 
 async function startMCPServer(name, config) {
-  // 1. 创建子进程
+  // 1. Create a child process
   const process = spawn(config.command, config.args, {
     env: { ...process.env, ...config.env }
   });
 
-  // 2. 创建 MCP 客户端
+  // 2. Create MCP client
   const client = new Client({
     name: "claude-desktop",
     version: "1.0.0"
   });
 
-  // 3. 连接到服务器的 stdio
+  // 3. Connect to the stdio of the server
   const transport = new StdioClientTransport({
     stdout: process.stdout,
     stdin: process.stdin
   });
 
-  // 4. 连接并初始化
+  // 4. Connect and initialize
   await client.connect(transport);
   await client.initialize();
 
-  // 5. 获取工具列表
+  // 5. Get the tool list
   const tools = await client.listTools();
 
-  // 6. 注册工具
+  // 6. Registration tool
   registerTools(name, tools.tools);
 }
 ```
@@ -807,7 +807,7 @@ def tavily_search(
     max_results: int = 10
 ) -> str:
     """
-    使用 Tavily API 搜索网络获取最新信息
+    Use the Tavily API to search the web for the latest information
     """
     response = httpx.post(
         "https://api.tavily.com/search",
@@ -819,7 +819,7 @@ def tavily_search(
     )
     return response.json()
 
-# 启动服务器
+# Start the server
 if __name__ == "__main__":
     mcp.run(transport="stdio")
 ```
@@ -828,11 +828,11 @@ if __name__ == "__main__":
 #### The client is responsible for protocol conversion
 
 ```typescript
-// Claude Desktop 内部的 MCP 适配器
+// Claude Desktop internal MCP adapter
 
 class ClaudeMCPAdapter {
   async connectToMCP(serverConfig: any) {
-    // 1. 连接到 MCP 服务器
+    // 1. Connect to MCP server
     const mcpClient = new Client({
       name: "claude-desktop",
       version: "1.0.0"
@@ -846,14 +846,14 @@ class ClaudeMCPAdapter {
 
     await mcpClient.connect(transport);
 
-    // 2. 获取 MCP 工具列表
+    // 2. Get the MCP tool list
     const toolsResult = await mcpClient.listTools();
 
-    // 3. 【关键】转换 MCP 格式 → Claude 格式
+    // 3. [Key] Convert MCP format → Claude format
     const claudeTools = toolsResult.tools.map(tool => ({
       name: `mcp__${serverName}__${tool.name}`,
       description: tool.description,
-      input_schema: tool.inputSchema  // ← MCP 的 inputSchema 直接兼容！
+      input_schema: tool.inputSchema // ← MCP's inputSchema is directly compatible!
     }));
 
     return claudeTools;
@@ -862,13 +862,13 @@ class ClaudeMCPAdapter {
   async callTool(toolName: string, args: any) {
     const [prefix, serverName, toolName] = toolName.split('__');
 
-    // 调用 MCP 服务器
+    // Call the MCP server
     const result = await this.mcpClient.callTool({
       name: toolName,
       arguments: args
     });
 
-    // 转换结果格式
+    //Convert result format
     return {
       type: 'tool_result',
       tool_use_id: this.generateId(),
@@ -883,7 +883,7 @@ class ClaudeMCPAdapter {
 ### Why is the MCP format automatically compatible?
 
 ```typescript
-// MCP 的 inputSchema 设计得非常好
+// MCP's inputSchema is very well designed
 
 {
   "type": "object",
@@ -894,14 +894,14 @@ class ClaudeMCPAdapter {
   "required": ["query"]
 }
 
-// Claude 格式
-input_schema: { ... }        // ← 直接使用
+// Claude format
+input_schema: { ... } // ← Use directly
 
-// OpenAI 格式
-parameters: { ... }           // ← 直接使用（只改字段名）
+// OpenAI format
+parameters: { ... } // ← Use directly (only change the field name)
 
-// Gemini 格式
-parameters: { ... }           // ← 直接使用
+// Gemini format
+parameters: { ... } // ← Use directly
 ```
 **This is why MCP is successful: its JSON Schema design is highly compatible with the tool definition formats of major LLMs! **
 
@@ -922,8 +922,8 @@ import Anthropic from '@anthropic-ai/sdk';
 
 const tavilySearchTool = {
   name: 'tavily_search',
-  description: '搜索网络获取最新信息',
-  input_schema: {  // ← Claude 格式
+  description: 'Search the Internet for the latest information',
+  input_schema: { // ← Claude format
     type: 'object',
     properties: {
       query: { type: 'string' },
@@ -998,8 +998,8 @@ const tavilySearchTool = {
   type: 'function' as const,
   function: {
     name: 'tavily_search',
-    description: '搜索网络获取最新信息',
-    parameters: {  // ← OpenAI 格式（不同！）
+    description: 'Search the Internet for the latest information',
+    parameters: { // ← OpenAI format (different!)
       type: 'object',
       properties: {
         query: { type: 'string' },
@@ -1010,7 +1010,7 @@ const tavilySearchTool = {
   }
 };
 
-async function callTavilyAPI(params: any) {  // ← 重复实现
+async function callTavilyAPI(params: any) { // ← Repeat implementation
   const response = await fetch('https://api.tavily.com/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -1083,15 +1083,15 @@ def tavily_search(
     search_depth: str = "basic"
 ) -> str:
     """
-    使用 Tavily API 搜索网络获取最新信息
+    Use the Tavily API to search the web for the latest information
 
     Args:
-        query: 搜索关键词
-        max_results: 最大结果数 (1-20)
-        search_depth: 搜索深度 (basic/advanced)
+        query: search keyword
+        max_results: Maximum number of results (1-20)
+        search_depth: search depth (basic/advanced)
 
     Returns:
-        搜索结果的 JSON 字符串
+        JSON string of search results
     """
     response = httpx.post(
         "https://api.tavily.com/search",
@@ -1108,13 +1108,13 @@ def tavily_search(
 @mcp.tool()
 def tavily_extract(urls: list[str]) -> str:
     """
-    从指定 URL 提取内容
+    Extract content from a specified URL
 
     Args:
-        urls: 要提取的 URL 列表
+        urls: list of URLs to extract
 
     Returns:
-        提取的内容
+        Extracted content
     """
     response = httpx.post(
         "https://api.tavily.com/extract",
@@ -1162,7 +1162,7 @@ if __name__ == "__main__":
 ```
 
 ```typescript
-// 自定义应用: custom-mcp-client.ts
+// Custom application: custom-mcp-client.ts
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
@@ -1182,10 +1182,10 @@ async function connectToTavilyMCP() {
 
   await client.connect(transport);
 
-  // 获取可用工具列表
+  // Get the list of available tools
   const toolsResult = await client.listTools();
 
-  console.log("可用工具:", toolsResult.tools);
+  console.log("Available tools:", toolsResult.tools);
 
   return client;
 }
@@ -1232,7 +1232,7 @@ async function connectToTavilyMCP() {
 #### For tool providers
 
 ```python
-# 1. 使用 MCP SDK 定义工具
+# 1. Use MCP SDK definition tool
 from mcp.server.fastmcp import FastMCP
 
 mcp = FastMCP("My Tool Server")
@@ -1240,25 +1240,25 @@ mcp = FastMCP("My Tool Server")
 @mcp.tool()
 def my_tool(param1: str, param2: int = 10) -> str:
     """
-    清晰的工具描述
+    Clear tool description
 
     Args:
-        param1: 参数说明
-        param2: 参数说明
+        param1: parameter description
+        param2: parameter description
 
     Returns:
-        返回值说明
+        Return value description
     """
     return "result"
 
-# 2. 启动服务器
+# 2. Start the server
 if __name__ == "__main__":
     mcp.run(transport="stdio")
 ```
 #### For client developers
 
 ```typescript
-// 1. 实现 MCP 适配器
+// 1. Implement MCP adapter
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 
@@ -1277,10 +1277,10 @@ class MyMCPAdapter {
 
     await client.connect(transport);
 
-    // 2. 转换 MCP 格式为自己的 LLM 格式
+    // 2. Convert MCP format to your own LLM format
     const toolsResult = await client.listTools();
     const myFormatTools = toolsResult.tools.map(tool => ({
-      // 转换逻辑
+      // Conversion logic
     }));
 
     return { client, tools: myFormatTools };
@@ -1290,12 +1290,12 @@ class MyMCPAdapter {
 #### For users
 
 ```json
-// 1. 配置 MCP 服务器
+// 1. Configure MCP server
 {
   "mcpServers": {
     "tool-name": {
-      "command": "启动命令",
-      "args": ["参数"],
+      "command": "Start command",
+      "args": ["parameters"],
       "env": {
         "API_KEY": "your-api-key"
       }
@@ -1303,8 +1303,8 @@ class MyMCPAdapter {
   }
 }
 
-// 2. 重启 LLM 应用
-// 3. 直接使用工具！
+// 2. Restart the LLM application
+// 3. Use the tool directly!
 ```
 ### Further reading
 
