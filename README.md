@@ -4,24 +4,27 @@
 
 > *"The question is not what you look at, but what you see."* — Henry David Thoreau
 
-The simplest way to understand MCP and run one minimal multi-MCP agent flow.
+Minimal MCP (Model Context Protocol) demos in Python:
+- a tiny MCP server that exposes a few toy tools (`add`, `multiply`, `weather`)
+- MCP clients for **stdio**, **SSE**, and **Streamable HTTP**
+- an OpenAI function-calling loop that calls MCP tools
+- Tavily MCP integration examples (local stdio via `npx`, and remote Streamable HTTP via SSE)
 
-A minimal implementation of:
-- the core MCP JSON-RPC shape (`initialize`, `tools/list`, `tools/call`)
-- fake MCP server registration in both custom and official MCP paths
-- three nanoAgent-style tool-calling agents (custom MCP / official MCP / official real MCP examples)
+This repository is intentionally small and easy to read: each transport is a self-contained end-to-end example.
 
-## version
+## Version
 
 v0.1.0
 
-## install
+## Install
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Set your environment variables:
+## Environment variables
+
+These examples call an LLM via the OpenAI Python SDK.
 
 **macOS/Linux:**
 ```bash
@@ -37,99 +40,87 @@ $env:OPENAI_BASE_URL='https://api.openai.com/v1'  # optional
 $env:OPENAI_MODEL='gpt-4o-mini'  # optional
 ```
 
-## quick start
+Tavily examples also require:
+```bash
+export TAVILY_API_KEY='your-tavily-key'
+```
+
+Some scripts support StepFun-compatible env vars (as a fallback):
+- `STEP_API_KEY` (used when `OPENAI_API_KEY` is missing)
+- `DEFAULT_BASE_URL` (defaults to `https://api.stepfun.com/v1`)
+- `DEFAULT_MODEL` (defaults to `step-3.5-flash`)
+
+## Quick start (local demo MCP server)
+
+**stdio**
+```bash
+python stdio/mcp_stdio_client.py "3加5等于多少"
+```
+
+**SSE (HTTP POST + SSE response)**
+```bash
+python sse/mcp_sse_client.py "北京天气怎么样"
+```
+
+**Streamable HTTP (HTTP JSON request/response)**
+```bash
+python streamable_http/mcp_streamable_http_client.py "先算 7*6 再算 + 5"
+```
+
+Each client spins up its matching server process automatically.
+
+## Tavily MCP examples
+
+### 1) Tavily over stdio (local `npx` process)
+
+Requires Node.js so `npx` is available.
 
 ```bash
-python agent.py "list tools and call math.add for 7 + 5"
-python agent-official.py "list tools and call math.add for 7 + 5"
-python agent_official_mcp.py "show tavily/context7 install config and one call example"
+export TAVILY_API_KEY='your-tavily-key'
+python stdio_tavily/mcp_stdio_tavily_client.py "Use Tavily search 2 times and give me 5 links about: MCP Streamable HTTP transport"
 ```
 
-## project structure
+### 2) Tavily over Streamable HTTP (remote SSE URL)
 
-This repo now has two folders:
-- `nanomcp`: self-implemented MCP protocol + multiple transport support + multi-server registry
-- `officialmcp`: direct wrapper over official MCP Python SDK (`mcp.server.fastmcp.FastMCP`) for registration
-
-`nanomcp` keeps a nanoAgent-style approach: one minimal loop and one minimal transport abstraction.
-
-## how it works
-
-`nanomcp` provides a tiny MCP data-layer simulation:
-1. Host sends JSON-RPC `initialize` to each registered server
-2. Host requests `tools/list` and merges tools from all servers
-3. Agent invokes `call_mcp_tool`
-4. Registry routes to target server with `tools/call`
-5. Tool result is returned back to the model loop
-
-The core is still one simple loop:
-model call → tool call → tool result → model call.
-
-## minimal mcp shape in this repo
-
-This project implements the minimum practical subset:
-- JSON-RPC 2.0 message envelope
-- lifecycle handshake (`initialize`)
-- tool discovery (`tools/list`)
-- tool invocation (`tools/call`)
-- capability field for `tools`
-
-## built-in fake mcp servers
-
-- `math` server
-  - `math.add`
-  - `math.multiply`
-- `utility` server
-  - `utility.echo`
-  - `utility.search` (fake results)
-- `meta` server
-  - `meta.version`
-
-These fake servers are registerable in:
-- `nanomcp` custom registry (`build_default_registry`)
-- `officialmcp` official SDK registry (`build_official_fake_registry`)
-
-## built-in transports in nanomcp
-
-- `inmemory`: direct JSON-RPC calls in process
-- `stdio`: newline-delimited JSON messages
-- `sse`: HTTP post + SSE event stream response
-- `streamable_http`: HTTP JSON request/response style
-
-## file map
-
-- `nanomcp/protocol.py`: JSON-RPC envelope and MCP request builders
-- `nanomcp/server.py`: minimal MCP server (`initialize`, `tools/list`, `tools/call`)
-- `nanomcp/client.py`: in-memory MCP client
-- `nanomcp/transport.py`: unified client for `stdio` / `sse` / `streamable_http`
-- `nanomcp/registry.py`: multi-MCP registration and call routing
-- `nanomcp/builtin.py`: built-in fake servers and tool handlers
-- `officialmcp/registry.py`: official MCP SDK registration wrapper
-- `stdio/mcp_stdio_server.py`: stdio transport MCP server demo
-- `stdio/mcp_stdio_client.py`: stdio transport MCP client + agent loop demo
-- `sse/mcp_sse_server.py`: SSE transport MCP server demo
-- `sse/mcp_sse_client.py`: SSE transport MCP client + agent loop demo
-- `streamable_http/mcp_streamable_http_server.py`: streamable_http transport MCP server demo
-- `streamable_http/mcp_streamable_http_client.py`: streamable_http transport MCP client + agent loop demo
-- `agent.py`: agent for custom nanomcp fake registry
-- `agent-official.py`: agent for officialmcp fake registry
-- `agent_official_mcp.py`: official MCP real integration template for tavily/context7
-- `smoke_test.py`: python-runnable smoke checks
-
-## officialmcp quick usage
-
-```python
-from officialmcp import build_official_fake_registry
-
-registry = build_official_fake_registry()
-registry.run(transport="stdio")
-```
-
-## run checks
+This example connects to a remote MCP server that uses the Streamable HTTP pattern (SSE stream + POST message endpoint).
 
 ```bash
-python smoke_test.py
+export TAVILY_REMOTE_SSE_URL='https://.../sse'  # optional, a default is baked into the script
+python streamable_http_tavily/mcp_streamable_http_tavily_client.py "Use Tavily search 3 times and give me 3 links about: MCP tools/list"
 ```
+
+## What is implemented
+
+These examples implement the minimal practical subset of MCP tools:
+- JSON-RPC 2.0 envelope
+- lifecycle handshake: `initialize`
+- tool discovery: `tools/list`
+- tool invocation: `tools/call`
+- (remote Streamable HTTP client only) `notifications/initialized`
+
+Protocol version used in demos: `2024-11-05`.
+
+## Project layout
+
+- `stdio/`
+  - `mcp_stdio_server.py`: MCP server over stdio
+  - `mcp_stdio_client.py`: MCP client + LLM loop (spawns the server)
+- `sse/`
+  - `mcp_sse_server.py`: MCP server over HTTP that replies via SSE
+  - `mcp_sse_client.py`: MCP client + LLM loop (spawns the server)
+- `streamable_http/`
+  - `mcp_streamable_http_server.py`: MCP server over HTTP JSON
+  - `mcp_streamable_http_client.py`: MCP client + LLM loop (spawns the server)
+- `stdio_tavily/`
+  - `mcp_stdio_tavily_client.py`: connect to `tavily-mcp` via stdio (`npx`)
+- `streamable_http_tavily/`
+  - `mcp_streamable_http_tavily_client.py`: connect to a remote Streamable HTTP (SSE) endpoint
+- `docs/`: MCP protocol notes + implementation deep dives
+
+## Notes
+
+- Default ports: SSE server uses `127.0.0.1:8765`, Streamable HTTP server uses `127.0.0.1:8766`.
+- If the model keeps calling tools, the clients stop after a maximum number of iterations and return `Max iterations reached`.
 
 ## mcp references
 
