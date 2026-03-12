@@ -12,6 +12,9 @@ Minimal MCP (Model Context Protocol) demos in Python:
 
 This repository is intentionally small and easy to read: each transport is a self-contained end-to-end example.
 
+If you forget what an “agent loop” is or how OpenAI function calling works, read:
+https://github.com/sanbuphy/nanoAgent
+
 ## Version
 
 v0.1.0

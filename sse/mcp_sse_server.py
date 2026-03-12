@@ -1,25 +1,25 @@
 """
-MCP Server: 通过 SSE 暴露工具
-用法: python sse/mcp_sse_server.py
+MCP Server: expose tools over SSE
+Usage: python sse/mcp_sse_server.py
 """
 import json
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 TOOLS = {
     "add": {
-        "description": "两数相加",
+        "description": "Add two numbers",
         "inputSchema": {"type": "object", "properties": {"a": {"type": "number"}, "b": {"type": "number"}}, "required": ["a", "b"]},
         "handler": lambda a, b: a + b,
     },
     "multiply": {
-        "description": "两数相乘",
+        "description": "Multiply two numbers",
         "inputSchema": {"type": "object", "properties": {"a": {"type": "number"}, "b": {"type": "number"}}, "required": ["a", "b"]},
         "handler": lambda a, b: a * b,
     },
     "weather": {
-        "description": "查询城市天气",
+        "description": "Get weather for a city",
         "inputSchema": {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]},
-        "handler": lambda city: f"{city}: 晴 152°C",
+        "handler": lambda city: f"{city}: Sunny 152°C",
     },
 }
 

@@ -12,6 +12,9 @@
 
 本仓库刻意保持“每个传输一个最小闭环示例”，方便对照阅读与上手。
 
+如果你忘了 agent 的概念，或忘了什么是 function calling，推荐去看：
+https://github.com/sanbuphy/nanoAgent
+
 ## 版本
 
 v0.1.0
