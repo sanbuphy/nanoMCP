@@ -1,9 +1,10 @@
 """
-MCP Client: 通过 Remote SSE URL 连接 tavily-mcp
-用法: python streamable_http_tavily/mcp_streamable_http_tavily_client.py
+MCP Client: Connect to tavily-mcp via Remote SSE URL
+Usage: python streamable_http_tavily/mcp_streamable_http_tavily_client.py
 """
 import json
 import os
+import re
 import sys
 from urllib import parse, request
 from openai import OpenAI
@@ -117,7 +118,26 @@ class MCPClient:
             if resp.status not in (200, 202):
                 raise RuntimeError(f"Unexpected HTTP status for notification: {resp.status}")
 
-def run_agent(user_message, max_iterations=8):
+def _extract_tool_call_budget(user_message: str):
+    patterns = [
+        r"(?:search|query|call)\s*(?:for\s*)?(\d{1,2})\s*(?:times|searches|queries|rounds|iterations)\b",
+        r"(\d{1,2})\s*(?:times|searches|queries|rounds|iterations)\b",
+        r"(\d{1,2})\s*次(?:查询|搜索|工具调用)?",
+    ]
+    for p in patterns:
+        m = re.search(p, user_message, flags=re.IGNORECASE)
+        if not m:
+            continue
+        try:
+            n = int(m.group(1))
+        except (TypeError, ValueError):
+            continue
+        if 1 <= n <= 20:
+            return n
+    return None
+
+
+def run_agent(user_message, max_iterations=8, default_tool_calls=4):
     url = os.environ.get("TAVILY_REMOTE_SSE_URL", "https://mcp.api-inference.modelscope.net/833945cc3b2848/sse")
     mcp = MCPClient(url)
     api_key = os.environ.get("OPENAI_API_KEY") or os.environ.get("STEP_API_KEY")
@@ -130,10 +150,13 @@ def run_agent(user_message, max_iterations=8):
         {"type": "function", "function": {"name": t["name"], "description": t["description"], "parameters": t["inputSchema"]}}
         for t in tools
     ]
+    tool_call_budget = _extract_tool_call_budget(user_message) or default_tool_calls
     messages = [
-        {"role": "system", "content": "你是搜索助手。你可以多次调用 MCP 工具。若用户要求 N 条结果，你必须调用足够多轮并最终返回不少于 N 条可点击 URL。"},
+        {"role": "system", "content": "You are a search assistant. Always respond in English.\n\nYou can call MCP tools multiple times.\n- If the user requests N results, you must call tools enough times and return at least N clickable URLs.\n- If the user specifies how many searches/tool calls to run, follow that number.\n- Otherwise, default to 4 tool calls."},
         {"role": "user", "content": user_message},
     ]
+    tool_calls_made = 0
+    budget_notice_added = False
     for _ in range(max_iterations):
         resp = llm.chat.completions.create(
             model=model,
@@ -145,13 +168,24 @@ def run_agent(user_message, max_iterations=8):
         if not msg.tool_calls:
             return msg.content or ""
         for tc in msg.tool_calls:
+            if tool_calls_made >= tool_call_budget:
+                messages.append({
+                    "role": "tool",
+                    "tool_call_id": tc.id,
+                    "content": "Tool call budget exceeded. Do not call any more tools; answer using the information already gathered.",
+                })
+                continue
             args = json.loads(tc.function.arguments) if tc.function.arguments else {}
             print(f"[MCP] {tc.function.name}({args})")
             result = mcp.call_tool(tc.function.name, args)
             messages.append({"role": "tool", "tool_call_id": tc.id, "content": str(result)})
+            tool_calls_made += 1
+        if tool_calls_made >= tool_call_budget and not budget_notice_added:
+            messages.append({"role": "system", "content": "Tool call budget reached. Produce the final answer now without calling any tools."})
+            budget_notice_added = True
     return "Max iterations reached"
 
 
 if __name__ == "__main__":
-    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Use Tavily search and give me 5 links answering: What is currently the best large language model in the world?"
+    query = " ".join(sys.argv[1:]) if len(sys.argv) > 1 else "Use Tavily search 3 times and give me 1 link answering: What is currently the best large language model in the world?"
     print(run_agent(query))
